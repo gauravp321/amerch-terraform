@@ -574,7 +574,7 @@ artifacts:
 # Cloud Build options
 options:
   # Using E2 machine type for universal region support (N1 deprecated in some regions)
-  machineType: 'E2_HIGHCPU_2'
+  machineType: 'E2_HIGHCPU_4'
   # Logging enabled - roles/logging.logWriter permission granted to Cloud Build SA
   logging: CLOUD_LOGGING_ONLY
   env:
