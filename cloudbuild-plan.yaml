@@ -155,6 +155,7 @@ steps:
         sh /workspace/scripts/terraform-import.sh google_storage_bucket.pos_files "$$BUCKET_NAME" --non-critical
         FUNCTION_BUCKET="$${BUCKET_NAME}-gcf-source"
         sh /workspace/scripts/terraform-import.sh google_storage_bucket.function_source "$$FUNCTION_BUCKET" --non-critical
+        echo "✓ import-pos passed"
     id: 'import-pos'
     waitFor: ['validate-pos']
     env:
