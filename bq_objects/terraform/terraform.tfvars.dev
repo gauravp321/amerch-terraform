@@ -1,0 +1,120 @@
+# Terraform variable values for development environment
+# This file is committed to version control as it contains only non-sensitive values
+
+project_id = "quantiphi-test-470710"
+region     = "us-central1"
+
+# Dataset prefixes
+gcloud_mysql_dataset_prefix = "raw_fivetran_gcloud_performance"
+salesforce_dataset_prefix   = "raw_fivetran_salesforce"
+workday_hcm_dataset_prefix  = "raw_fivetran_workday_hcm"
+
+# Labels
+labels = {
+  environment = "dev"
+  managed_by  = "terraform"
+  project     = "bq-objects"
+}
+
+# Dataset configurations
+datasets = {
+  coreapp = {
+    friendly_name  = "Cloud SQL MySQL Core App"
+    description    = "Cloud SQL MySQL Performance Core App dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  activity = {
+    friendly_name  = "Cloud SQL MySQL Activity"
+    description    = "Cloud SQL MySQL Performance Activity dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  alignment = {
+    friendly_name  = "Cloud SQL MySQL Alignment"
+    description    = "Cloud SQL MySQL Performance Alignment dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  billing = {
+    friendly_name  = "Cloud SQL MySQL Billing"
+    description    = "Cloud SQL MySQL Performance Billing dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  employee = {
+    friendly_name  = "Cloud SQL MySQL Employee"
+    description    = "Cloud SQL MySQL Performance Employee dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  item = {
+    friendly_name  = "Cloud SQL MySQL Item"
+    description    = "Cloud SQL MySQL Performance Item dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  ninja = {
+    friendly_name  = "Cloud SQL MySQL Ninja"
+    description    = "Cloud SQL MySQL Performance Ninja dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  program = {
+    friendly_name  = "Cloud SQL MySQL Program"
+    description    = "Cloud SQL MySQL Performance Program dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  salesforce = {
+    friendly_name  = "Salesforce"
+    description    = "Salesforce dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = false
+    is_salesforce  = true
+    is_workday_hcm = false
+  }
+  workday_hcm = {
+    friendly_name  = "Workday HCM"
+    description    = "Workday HCM dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = false
+    is_salesforce  = false
+    is_workday_hcm = true
+  }
+  pos_files = {
+    friendly_name  = "POS Files"
+    description    = "POS file ingestion dataset - tables created via cloud function"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = false
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+}

@@ -1,0 +1,24 @@
+# Example Terraform variable values for non-production environment
+# Copy this file to terraform.tfvars and update values as needed
+# DO NOT commit terraform.tfvars to version control if it contains sensitive values
+
+project_id = "quantiphi-test-470710"
+region     = "us-central1"
+
+bucket_name = "eventarc-gp74"
+function_name = "gcf_pos_file"
+
+service_account_email = "cfdl-gp-test@quantiphi-test-470710.iam.gserviceaccount.com"
+
+# Security and resource management
+environment              = "dev"
+cost_center              = "data-engineering"
+cloud_function_trigger   = "trigger-pos-file"
+email_enabled            = "TRUE"
+enable_bucket_versioning = true
+retention_policy_locked  = false
+# kms_key_name = null
+
+# Optional: Specify a custom name for the Cloud Function source bucket
+# If not specified, will default to "${bucket_name}-gcf-source"
+# function_source_bucket_name = "eventarc-gp74-gcf-source"

@@ -1,0 +1,13 @@
+# Pinned versions for security and reproducibility
+# Update versions carefully and test before deploying
+functions-framework==3.*
+google-cloud-storage==2.*
+google-cloud-bigquery==3.*
+google-auth==2.*
+google-api-core==2.*
+sendgrid==6.*
+requests==2.*
+google-cloud-secret-manager==2.*
+google-cloud-monitoring
+googleapis-common-protos
+
