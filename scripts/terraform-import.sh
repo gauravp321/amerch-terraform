@@ -159,6 +159,8 @@ main() {
       fi
       ;;
   esac
+
+  echo -e "Execution completed"
 }
 
 # Run main function
