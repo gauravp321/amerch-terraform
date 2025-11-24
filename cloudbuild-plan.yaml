@@ -621,4 +621,4 @@ timeout: '1200s'
 #   - Cloud Build SA has roles/storage.objectAdmin on amerch-terraform-state bucket
 # - Provider (infrastructure): Uses impersonation via GOOGLE_IMPERSONATE_SERVICE_ACCOUNT (all other steps)
 #   - Terraform runs as terraform-demo@quantiphi-test-470710.iam.gserviceaccount.com (has all required permissions)
-# serviceAccount: 'projects/cicd-shared-414116/serviceAccounts/sa-cb-amerch-dev@cicd-shared-414116.iam.gserviceaccount.com'
+# serviceAccount: 'projects/quantiphi-test-470710/serviceAccounts/sa-cb-amerch-dev@cicd-shared-414116.iam.gserviceaccount.com'

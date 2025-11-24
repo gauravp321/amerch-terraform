@@ -13,7 +13,7 @@ This configuration creates:
 Infrastructure is deployed via Cloud Build triggered by Bitbucket branch merges:
 
 - **Repository:** `dashmanagement/bq_dataflow` (Bitbucket)
-- **CI/CD Project:** `cicd-shared-414116`
+- **CI/CD Project:** `quantiphi-test-470710`
 - **State Bucket:** `amerch-terraform-state` (in CI/CD project)
 - **State Prefix:** `bq_dataflow/{environment}/bq_objects` (e.g., `bq_dataflow/dev/bq_objects`, `bq_dataflow/prod/bq_objects`)
 - **Configuration:** `cloudbuild-plan.yaml` (repository root - deploys all infrastructure)

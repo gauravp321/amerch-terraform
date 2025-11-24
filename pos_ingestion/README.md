@@ -11,7 +11,7 @@ The Terraform configuration in `terraform/` provisions the GCP infrastructure re
 Infrastructure is deployed via Cloud Build triggered by Bitbucket branch merges:
 
 - **Repository:** `dashmanagement/bq_dataflow` (Bitbucket)
-- **CI/CD Project:** `cicd-shared-414116`
+- **CI/CD Project:** `quantiphi-test-470710`
 - **State Bucket:** `amerch-terraform-state` (in CI/CD project)
 - **State Prefix:** `bq_dataflow/{environment}/pos_ingestion` (e.g., `bq_dataflow/dev/pos_ingestion`, `bq_dataflow/prod/pos_ingestion`)
 - **Configuration:** `cloudbuild-plan.yaml` (repository root - deploys all infrastructure)
@@ -37,7 +37,7 @@ Infrastructure is deployed via Cloud Build triggered by Bitbucket branch merges:
 
 #### For CI/CD Deployment (Cloud Build)
 
-1. **Terraform Service Account**: Project-specific service accounts are created by the project owner in the CI/CD project (`cicd-shared-414116`)
+1. **Terraform Service Account**: Project-specific service accounts are created by the project owner in the CI/CD project (`quantiphi-test-470710`)
    - Service accounts have infrastructure permissions for their respective projects
    - Configured at the Cloud Build trigger level
 

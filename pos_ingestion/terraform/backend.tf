@@ -2,7 +2,7 @@ terraform {
   backend "gcs" {
     # Backend bucket for Terraform state storage
     # CI/CD Configuration:
-    #   - State bucket: amerch-terraform-state (in project cicd-shared-414116)
+    #   - State bucket: amerch-terraform-state (in project quantiphi-test-470710)
     #   - Prefix: bq_dataflow/{environment}/pos_ingestion (e.g., bq_dataflow/dev/pos_ingestion, bq_dataflow/prod/pos_ingestion)
     #   - In Cloud Build, overridden via -backend-config flags:
     #     -backend-config="bucket=${_TERRAFORM_STATE_BUCKET}"
