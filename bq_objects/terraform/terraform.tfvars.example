@@ -1,0 +1,135 @@
+# Copy this file to terraform.tfvars and update with your values
+# cp terraform.tfvars.example terraform.tfvars
+
+project_id = "quantiphi-test-470710"
+region     = "us-central1"
+
+# Dataset prefixes - these will be used to construct dataset names
+# Fivetran dataset prefix
+# For example: if set to "fivetran_gcloud_mysql_performance_dev", datasets will be named:
+# - fivetran_gcloud_mysql_performance_dev_coreapp
+# - fivetran_gcloud_mysql_performance_dev_activity
+# etc.
+gcloud_mysql_dataset_prefix = "fivetran_gcloud_mysql_performance_dev"
+
+# Salesforce dataset prefix
+# For example: if set to "salesforce", dataset will be named: salesforce_sandbox
+salesforce_dataset_prefix = "salesforce"
+
+# Workday HCM dataset prefix
+# For example: if set to "workday_hcm", dataset will be named: workday_hcm
+workday_hcm_dataset_prefix = "workday_hcm"
+
+# Labels applied to all resources
+# Note: dataplex-data-documentation-published-project is automatically set to project_id
+labels = {
+  dataplex-data-documentation-published-location = "us-central1"
+}
+
+# Dataset configurations - REQUIRED
+# Each dataset's settings are defined in the datasets variable
+# For Fivetran datasets, use suffixes (e.g., "coreapp", "activity") which will be
+# automatically prefixed with gcloud_mysql_dataset_prefix
+# For Salesforce, use suffix "sandbox" which will be prefixed with salesforce_dataset_prefix
+# For Workday HCM, the prefix is used directly (no suffix)
+datasets = {
+  coreapp = {
+    friendly_name  = "Cloud SQL MySQL Core App"
+    description    = "Cloud SQL MySQL Performance Core App dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  activity = {
+    friendly_name  = "Cloud SQL MySQL Activity"
+    description    = "Cloud SQL MySQL Performance Activity dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  alignment = {
+    friendly_name  = "Cloud SQL MySQL Alignment"
+    description    = "Cloud SQL MySQL Performance Alignment dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  billing = {
+    friendly_name  = "Cloud SQL MySQL Billing"
+    description    = "Cloud SQL MySQL Performance Billing dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  employee = {
+    friendly_name  = "Cloud SQL MySQL Employee"
+    description    = "Cloud SQL MySQL Performance Employee dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  item = {
+    friendly_name  = "Cloud SQL MySQL Item"
+    description    = "Cloud SQL MySQL Performance Item dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  ninja = {
+    friendly_name  = "Cloud SQL MySQL Ninja"
+    description    = "Cloud SQL MySQL Performance Ninja dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  program = {
+    friendly_name  = "Cloud SQL MySQL Program"
+    description    = "Cloud SQL MySQL Performance Program dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = true
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+  salesforce = {
+    friendly_name  = "Salesforce"
+    description    = "Salesforce dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = false
+    is_salesforce  = true
+    is_workday_hcm = false
+  }
+  workday_hcm = {
+    friendly_name  = "Workday HCM"
+    description    = "Workday HCM dataset"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = false
+    is_salesforce  = false
+    is_workday_hcm = true
+  }
+  pos_files = {
+    friendly_name  = "POS Files"
+    description    = "POS file ingestion dataset - tables created via cloud function"
+    location       = "us-central1"
+    labels         = {}
+    is_mysql       = false
+    is_salesforce  = false
+    is_workday_hcm = false
+  }
+}

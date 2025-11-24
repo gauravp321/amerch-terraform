@@ -1,0 +1,19 @@
+# Terraform variable values for development environment
+# This file is committed to version control as it contains only non-sensitive values
+
+project_id = "quantiphi-test-470710"
+region     = "us-central1"
+
+bucket_name   = "eventarc-gp74"
+function_name = "gcf_pos_file"
+
+service_account_email = "cfdl-gp-test@quantiphi-test-470710.iam.gserviceaccount.com"
+
+# Security and resource management
+environment              = "dev"
+cost_center              = "data-engineering"
+cloud_function_trigger   = "trigger-pos-file"
+email_enabled            = "TRUE"
+enable_bucket_versioning = true
+retention_policy_locked  = false
+# kms_key_name = null  # Use default encryption, or specify KMS key for CMEK

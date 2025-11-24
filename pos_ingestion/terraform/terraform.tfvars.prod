@@ -1,0 +1,19 @@
+# Terraform variable values for production environment
+# This file is committed to version control as it contains only non-sensitive values
+
+project_id = "amerchgcp-amerch-prod"
+region     = "us-central1"
+
+bucket_name   = "amerch-pos-files-prod"
+function_name = "gcf_pos_file"
+
+service_account_email = "cfndl-pos-files@amerchgcp-amerch-prod.iam.gserviceaccount.com"
+
+# Security and resource management
+environment              = "prod"
+cost_center              = "data-engineering"
+cloud_function_trigger   = "trigger-pos-file"
+email_enabled            = "TRUE"
+enable_bucket_versioning = true
+retention_policy_locked  = true
+# kms_key_name = null  # Use default encryption, or specify KMS key for CMEK

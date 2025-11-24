@@ -1,0 +1,94 @@
+# Pre-commit hooks for Terraform infrastructure validation
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Terraform formatting and validation
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.83.0
+    hooks:
+      # Format Terraform files
+      - id: terraform_fmt
+        args:
+          - --args=-diff
+          - --args=-check
+        files: \.tf$
+
+      # Validate Terraform syntax
+      # Note: Excludes tables/ subdirectory - validation from parent directory (bq_objects/terraform/)
+      # automatically includes all .tf files in subdirectories, so excluding prevents duplicate validation
+      - id: terraform_validate
+        args:
+          - --args=-no-color
+        files: \.tf$
+        exclude: |
+          (?x)^(
+            bq_objects/terraform/tables/.*
+          )$
+
+      # Note: terraform_docs hook requires terraform-docs binary to be installed
+      # It's commented out to avoid dependency issues. Can be enabled if needed.
+      # - id: terraform_docs
+      #   args:
+      #     - --hook-config=--path-to-file=README.md
+      #     - --hook-config=--add-to-existing-file=true
+      #     - --hook-config=--create-file-if-not-exist=true
+      #   files: \.tf$
+      #   exclude: |
+      #     (?x)^(
+      #       bq_objects/terraform/tables\.tf|
+      #       pos_ingestion/terraform/src/.*
+      #     )$
+
+      # Note: terraform_tfvars and terraform_tfvars_json hooks are not available
+      # in this version of pre-commit-terraform. tfvars files are validated
+      # through terraform validate when referenced in terraform.tfvars files.
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Prevent committing large files
+      - id: check-added-large-files
+        args: ['--maxkb=10000']
+
+      # Check for merge conflicts
+      - id: check-merge-conflict
+
+      # Check YAML syntax
+      - id: check-yaml
+        args: ['--unsafe']  # Allow custom tags in YAML
+
+      # Check JSON syntax
+      - id: check-json
+
+      # Trailing whitespace
+      - id: trailing-whitespace
+        exclude: \.md$
+
+      # End files with newline
+      - id: end-of-file-fixer
+        exclude: \.md$
+
+      # Remove unnecessary blank lines
+      - id: mixed-line-ending
+
+      # Check for files that would conflict in case-insensitive filesystems
+      - id: check-case-conflict
+
+  # Python code quality (for Cloud Function)
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        files: ^pos_ingestion/terraform/src/.*\.py$
+        # language_version removed to use system default Python
+
+  # Python linting
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        files: ^pos_ingestion/terraform/src/.*\.py$
+        args: ['--max-line-length=120', '--extend-ignore=E203,W503']
+        additional_dependencies: [flake8-docstrings]
