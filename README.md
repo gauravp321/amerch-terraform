@@ -199,7 +199,7 @@ The system consists of three main components that work together to provide end-t
 
 ### CI/CD Configuration
 
-- **CI/CD Project**: `cicd-shared-414116`
+- **CI/CD Project**: `quantiphi-test-470710`
 - **State Bucket**: `amerch-terraform-state`
 - **State Prefix**: `bq_dataflow/{environment}/{module}`
 - **Repository**: `dashmanagement/bq_dataflow` (Bitbucket)

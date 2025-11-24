@@ -17,3 +17,4 @@ email_enabled            = "TRUE"
 enable_bucket_versioning = true
 retention_policy_locked  = false
 # kms_key_name = null  # Use default encryption, or specify KMS key for CMEK
+
