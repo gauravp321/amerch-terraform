@@ -28,7 +28,7 @@ RESOURCE_ID=""
 SKIP_STATE_CHECK=false
 NON_CRITICAL=false
 
-while [[ $# -gt 0 ]]; do
+while [ $# -gt 0 ]; do
   case $1 in
     --skip-state-check)
       SKIP_STATE_CHECK=true
