@@ -13,7 +13,10 @@
 #   terraform-import.sh google_storage_bucket.pos_files "my-bucket"
 #   terraform-import.sh 'google_bigquery_dataset.datasets["my_dataset"]' "projects/my-project/datasets/my_dataset"
 
-set -euo pipefail
+set -eu
+
+# Enable pipefail if supported (bash/zsh); ignore error on shells without it
+set -o pipefail 2>/dev/null || true
 
 # Colors for output
 RED='\033[0;31m'
