@@ -11,8 +11,11 @@ terraform {
     # WARNING: Default values below are for local development only.
     # Cloud Build MUST override these via -backend-config flags.
     # For local development, update these values or use backend config file.
-    bucket = "eventarc-gp74"
-    prefix = "terraform-state/bq_objects"
+    # bucket = "eventarc-gp74"
+    # prefix = "terraform-state/bq_objects"
+
+    bucket = "amerch-terraform-state"
+    prefix = "bq_dataflow/dev/bq_objects/"
 
     # Encryption: State is encrypted using Google-managed encryption keys by default.
     # For customer-managed encryption keys (CMEK), add encryption_key configuration.
