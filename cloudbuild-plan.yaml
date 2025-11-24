@@ -1,0 +1,624 @@
+steps:
+  # ============================================
+  # POS Ingestion Infrastructure
+  # ============================================
+
+  # Step 1: Initialize POS Ingestion Terraform
+  # Note: Backend uses Cloud Build SA credentials (not impersonated) for state bucket access
+  # Provider operations (plan/apply) will use impersonation via GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cd pos_ingestion/terraform
+        # Validate substitution variables are set (not placeholders)
+        if [ "${_TERRAFORM_STATE_BUCKET}" = "PLACEHOLDER_SET_IN_TRIGGER" ] || [ -z "${_TERRAFORM_STATE_BUCKET}" ]; then
+          echo "ERROR [CRITICAL]: _TERRAFORM_STATE_BUCKET substitution variable not set in trigger"
+          exit 1
+        fi
+        if [ "${_TERRAFORM_STATE_PREFIX}" = "PLACEHOLDER_SET_IN_TRIGGER" ] || [ -z "${_TERRAFORM_STATE_PREFIX}" ]; then
+          echo "ERROR [CRITICAL]: _TERRAFORM_STATE_PREFIX substitution variable not set in trigger"
+          exit 1
+        fi
+        terraform init \
+          -backend-config="bucket=${_TERRAFORM_STATE_BUCKET}" \
+          -backend-config="prefix=${_TERRAFORM_STATE_PREFIX}/pos_ingestion"
+    id: 'init-pos'
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      # Note: No GOOGLE_IMPERSONATE_SERVICE_ACCOUNT here - backend uses Cloud Build SA credentials
+
+  # Step 1b: Validate Environment Match for POS Ingestion
+  # Ensures tfvars file environment matches branch name to prevent cross-environment deployment
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        set -eo pipefail
+        cd pos_ingestion/terraform
+        echo "=========================================="
+        echo "Environment Validation for POS Ingestion"
+        echo "=========================================="
+        echo ""
+        # Auto-detect tfvars file (use _TFVARS_FILE if set, otherwise find terraform.tfvars.* excluding .example)
+        if [ -n "${_TFVARS_FILE:-}" ]; then
+          TFVARS_FILE="${_TFVARS_FILE}"
+        else
+          # Find first terraform.tfvars.* file that is not an example file
+          TFVARS_FILE=$$(ls terraform.tfvars.* 2>/dev/null | grep -v '\.example$' | head -n 1 || echo "")
+        fi
+        if [ -z "$$TFVARS_FILE" ] || [ ! -f "$$TFVARS_FILE" ]; then
+          echo "ERROR [CRITICAL]: Could not find terraform.tfvars file"
+          echo "  Expected: terraform.tfvars.dev, terraform.tfvars.prod, etc."
+          echo "  Or set _TFVARS_FILE substitution variable in Cloud Build trigger"
+          exit 1
+        fi
+        echo "Using tfvars file: $$TFVARS_FILE"
+        # Extract environment from tfvars file (always validate this exists)
+        ENV_FROM_TFVARS=$$(grep -E '^\s*environment\s*=' "$$TFVARS_FILE" | sed -E 's/.*environment[[:space:]]*=[[:space:]]*"?([^"]+)"?.*/\1/' || echo "")
+        echo "Environment from tfvars file: $${ENV_FROM_TFVARS:-'not found'}"
+        echo ""
+        # Validate environment exists in tfvars
+        if [ -z "$$ENV_FROM_TFVARS" ]; then
+          echo "ERROR [CRITICAL]: Could not extract environment from $$TFVARS_FILE"
+          echo "Ensure 'environment' variable is set in the tfvars file"
+          exit 1
+        fi
+        # Extract environment from branch name (optional - only if BRANCH_NAME is available)
+        # BRANCH_NAME may not be available in all trigger types (e.g., manual triggers)
+        if [ -n "$${BRANCH_NAME:-}" ]; then
+          ENV_FROM_BRANCH=$$(echo "$$BRANCH_NAME" | grep -oE '(dev|prod|staging|test)' || echo "")
+          echo "Environment from branch name ($$BRANCH_NAME): $${ENV_FROM_BRANCH:-'not detected'}"
+          echo ""
+          # Validate environment match if branch name contains environment
+          if [ -n "$$ENV_FROM_BRANCH" ] && [ "$$ENV_FROM_BRANCH" != "$$ENV_FROM_TFVARS" ]; then
+            echo "ERROR [CRITICAL]: Environment mismatch detected!"
+            echo "  Branch name suggests: '$$ENV_FROM_BRANCH'"
+            echo "  Tfvars file contains: '$$ENV_FROM_TFVARS'"
+            echo ""
+            echo "This prevents accidental cross-environment deployment."
+            echo "Please ensure the tfvars file matches the target environment."
+            exit 1
+          fi
+          if [ -n "$$ENV_FROM_BRANCH" ]; then
+            echo "✓ Environment validation passed: '$$ENV_FROM_TFVARS' matches branch '$$BRANCH_NAME'"
+          else
+            echo "INFO: Branch name '$$BRANCH_NAME' doesn't contain environment pattern (dev/prod/staging/test)"
+            echo "  Tfvars environment: $$ENV_FROM_TFVARS"
+            echo "  Branch-based validation skipped (validation based on tfvars file only)"
+          fi
+        else
+          echo "INFO: BRANCH_NAME not available (may be manual trigger or trigger type without branch context)"
+          echo "  Tfvars environment: $$ENV_FROM_TFVARS"
+          echo "  Branch-based validation skipped (validation based on tfvars file only)"
+        fi
+        echo ""
+    id: 'validate-env-pos'
+    waitFor: ['init-pos']
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      # Note: BRANCH_NAME is a built-in Cloud Build variable (if available)
+      # It may not be available in all trigger types (e.g., manual triggers)
+      # Validation works with or without BRANCH_NAME - only validates if available
+
+  # Step 2: Validate POS Ingestion Terraform
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
+        cd pos_ingestion/terraform
+        echo "Validating Terraform formatting..."
+        if ! terraform fmt -check -recursive -diff; then
+          echo "ERROR: Terraform files are not properly formatted"
+          echo "Run 'terraform fmt -recursive' to fix formatting issues"
+          exit 1
+        fi
+        echo "✓ Formatting check passed"
+        echo ""
+        echo "Validating Terraform configuration..."
+        terraform validate -no-color
+        echo "✓ Validation passed"
+    id: 'validate-pos'
+    waitFor: ['validate-env-pos']
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
+
+  # Step 3: Import existing POS buckets (if not already in state)
+  # This step imports buckets that exist in GCP but aren't in Terraform state
+  # Import will fail if resources are already in state - that's OK, we ignore the error
+  # Must run BEFORE plan so plan knows about existing resources
+  # Bucket name is extracted from terraform.tfvars file (no trigger modification needed)
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cd pos_ingestion/terraform
+        # Extract bucket_name from terraform.tfvars file
+        # Note: $$ escapes $ in Cloud Build YAML to prevent substitution variable interpretation
+        # ${_TFVARS_FILE} is a Cloud Build substitution variable (not escaped)
+        BUCKET_NAME=$$(grep -E '^\s*bucket_name\s*=' ${_TFVARS_FILE} | sed -E 's/.*bucket_name[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/')
+        if [ -z "$$BUCKET_NAME" ]; then
+          echo "ERROR: Could not extract bucket_name from ${_TFVARS_FILE}"
+          echo "This will cause the build to fail at apply step"
+          exit 1
+        fi
+        echo "Extracted bucket_name: $$BUCKET_NAME"
+        echo "Attempting to import existing buckets..."
+        # Use reusable import script for consistent error handling
+        # Use absolute path from workspace root (Cloud Build workspace is /workspace)
+        sh /workspace/scripts/terraform-import.sh google_storage_bucket.pos_files "$$BUCKET_NAME" --non-critical
+        FUNCTION_BUCKET="$${BUCKET_NAME}-gcf-source"
+        sh /workspace/scripts/terraform-import.sh google_storage_bucket.function_source "$$FUNCTION_BUCKET" --non-critical
+        echo "✓ import-pos passed"
+    id: 'import-pos'
+    waitFor: ['validate-pos']
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
+    # Note: This step will fail if permission errors occur (critical - will exit with error)
+    # Non-critical failures (bucket doesn't exist, already in state) are logged as warnings
+
+  # Step 4: Plan POS Ingestion Infrastructure
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cd pos_ingestion/terraform
+        terraform plan \
+          -out=tfplan-pos \
+          -var-file=${_TFVARS_FILE}
+        # Note: Removed -detailed-exitcode to avoid build failure on exit code 2 (changes detected)
+        # Exit code 2 is normal when changes are detected, not an error
+    id: 'plan-pos'
+    waitFor: ['import-pos']
+    timeout: '600s'  # 10 minutes timeout for plan operation
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
+    # Note: Plan files are persisted as artifacts at build level (see artifacts section below)
+
+  # ============================================
+  # BigQuery Objects Infrastructure
+  # ============================================
+
+  # Step 5: Initialize BigQuery Terraform
+  # Note: Backend uses Cloud Build SA credentials (not impersonated) for state bucket access
+  # Provider operations (plan/apply) will use impersonation via GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cd bq_objects/terraform
+        # Validate substitution variables are set (not placeholders)
+        if [ "${_TERRAFORM_STATE_BUCKET}" = "PLACEHOLDER_SET_IN_TRIGGER" ] || [ -z "${_TERRAFORM_STATE_BUCKET}" ]; then
+          echo "ERROR [CRITICAL]: _TERRAFORM_STATE_BUCKET substitution variable not set in trigger"
+          exit 1
+        fi
+        if [ "${_TERRAFORM_STATE_PREFIX}" = "PLACEHOLDER_SET_IN_TRIGGER" ] || [ -z "${_TERRAFORM_STATE_PREFIX}" ]; then
+          echo "ERROR [CRITICAL]: _TERRAFORM_STATE_PREFIX substitution variable not set in trigger"
+          exit 1
+        fi
+        terraform init \
+          -backend-config="bucket=${_TERRAFORM_STATE_BUCKET}" \
+          -backend-config="prefix=${_TERRAFORM_STATE_PREFIX}/bq_objects"
+    id: 'init-bq'
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      # Note: No GOOGLE_IMPERSONATE_SERVICE_ACCOUNT here - backend uses Cloud Build SA credentials
+
+  # Step 5b: Validate Environment Match for BigQuery Objects
+  # Ensures tfvars file environment matches branch name to prevent cross-environment deployment
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        set -eo pipefail
+        cd bq_objects/terraform
+        echo "=========================================="
+        echo "Environment Validation for BigQuery Objects"
+        echo "=========================================="
+        echo ""
+        # Auto-detect tfvars file (use _TFVARS_FILE if set, otherwise find terraform.tfvars.* excluding .example)
+        if [ -n "${_TFVARS_FILE:-}" ]; then
+          TFVARS_FILE="${_TFVARS_FILE}"
+        else
+          # Find first terraform.tfvars.* file that is not an example file
+          TFVARS_FILE=$$(ls terraform.tfvars.* 2>/dev/null | grep -v '\.example$' | head -n 1 || echo "")
+        fi
+        if [ -z "$$TFVARS_FILE" ] || [ ! -f "$$TFVARS_FILE" ]; then
+          echo "ERROR [CRITICAL]: Could not find terraform.tfvars file"
+          echo "  Expected: terraform.tfvars.dev, terraform.tfvars.prod, etc."
+          echo "  Or set _TFVARS_FILE substitution variable in Cloud Build trigger"
+          exit 1
+        fi
+        echo "Using tfvars file: $$TFVARS_FILE"
+        # Extract environment from tfvars file (nested in labels map) - always validate this exists
+        # Handle both formats: labels = { environment = "dev" } and labels = { environment = "dev", ... }
+        ENV_FROM_TFVARS=$$(grep -A 10 '^\s*labels\s*=' "$$TFVARS_FILE" | grep -E '^\s*environment\s*=' | sed -E 's/.*environment[[:space:]]*=[[:space:]]*"?([^"]+)"?.*/\1/' || echo "")
+        echo "Environment from tfvars file: $${ENV_FROM_TFVARS:-'not found'}"
+        echo ""
+        # Validate environment exists in tfvars
+        if [ -z "$$ENV_FROM_TFVARS" ]; then
+          echo "ERROR [CRITICAL]: Could not extract environment from $$TFVARS_FILE"
+          echo "Ensure 'environment' is set in the 'labels' map in the tfvars file"
+          exit 1
+        fi
+        # Extract environment from branch name (optional - only if BRANCH_NAME is available)
+        # BRANCH_NAME may not be available in all trigger types (e.g., manual triggers)
+        if [ -n "$${BRANCH_NAME:-}" ]; then
+          ENV_FROM_BRANCH=$$(echo "$$BRANCH_NAME" | grep -oE '(dev|prod|staging|test)' || echo "")
+          echo "Environment from branch name ($$BRANCH_NAME): $${ENV_FROM_BRANCH:-'not detected'}"
+          echo ""
+          # Validate environment match if branch name contains environment
+          if [ -n "$$ENV_FROM_BRANCH" ] && [ "$$ENV_FROM_BRANCH" != "$$ENV_FROM_TFVARS" ]; then
+            echo "ERROR [CRITICAL]: Environment mismatch detected!"
+            echo "  Branch name suggests: '$$ENV_FROM_BRANCH'"
+            echo "  Tfvars file contains: '$$ENV_FROM_TFVARS'"
+            echo ""
+            echo "This prevents accidental cross-environment deployment."
+            echo "Please ensure the tfvars file matches the target environment."
+            exit 1
+          fi
+          if [ -n "$$ENV_FROM_BRANCH" ]; then
+            echo "✓ Environment validation passed: '$$ENV_FROM_TFVARS' matches branch '$$BRANCH_NAME'"
+          else
+            echo "INFO: Branch name '$$BRANCH_NAME' doesn't contain environment pattern (dev/prod/staging/test)"
+            echo "  Tfvars environment: $$ENV_FROM_TFVARS"
+            echo "  Branch-based validation skipped (validation based on tfvars file only)"
+          fi
+        else
+          echo "INFO: BRANCH_NAME not available (may be manual trigger or trigger type without branch context)"
+          echo "  Tfvars environment: $$ENV_FROM_TFVARS"
+          echo "  Branch-based validation skipped (validation based on tfvars file only)"
+        fi
+        echo ""
+    id: 'validate-env-bq'
+    waitFor: ['init-bq']
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      # Note: BRANCH_NAME is a built-in Cloud Build variable (if available)
+      # It may not be available in all trigger types (e.g., manual triggers)
+      # Validation works with or without BRANCH_NAME - only validates if available
+
+  # Step 6: Validate BigQuery Terraform
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
+        cd bq_objects/terraform
+        echo "Validating Terraform formatting..."
+        if ! terraform fmt -check -recursive -diff; then
+          echo "ERROR: Terraform files are not properly formatted"
+          echo "Run 'terraform fmt -recursive' to fix formatting issues"
+          exit 1
+        fi
+        echo "✓ Formatting check passed"
+        echo ""
+        echo "Validating Terraform configuration..."
+        terraform validate -no-color
+        echo "✓ Validation passed"
+    id: 'validate-bq'
+    waitFor: ['validate-env-bq']
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
+
+  # Step 6b: Import existing BigQuery datasets (if not already in state)
+  # This step imports datasets that exist in GCP but aren't in Terraform state
+  # Must run BEFORE plan so plan knows about existing resources
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cd bq_objects/terraform
+        # Extract project_id from terraform.tfvars file
+        # Handle both quoted and unquoted values
+        PROJECT_ID=$$(grep -E '^\s*project_id\s*=' ${_TFVARS_FILE} | sed -E 's/.*project_id[[:space:]]*=[[:space:]]*"?([^"]+)"?.*/\1/')
+        if [ -z "$$PROJECT_ID" ]; then
+          echo "ERROR: Could not extract project_id from ${_TFVARS_FILE}"
+          exit 1
+        fi
+        echo "Extracted project_id: $$PROJECT_ID"
+        echo "Attempting to import existing BigQuery datasets..."
+        # List of expected dataset IDs based on variable defaults
+        # These match the dataset IDs that would be created by the for_each logic
+        EXPECTED_DATASETS="raw_fivetran_gcloud_performance_coreapp raw_fivetran_gcloud_performance_activity raw_fivetran_gcloud_performance_alignment raw_fivetran_gcloud_performance_billing raw_fivetran_gcloud_performance_employee raw_fivetran_gcloud_performance_item raw_fivetran_gcloud_performance_ninja raw_fivetran_gcloud_performance_program raw_fivetran_salesforce raw_fivetran_workday_hcm pos_files"
+        for DATASET_ID in $$EXPECTED_DATASETS; do
+          # Use reusable import script for consistent error handling
+          # Use absolute path from workspace root (Cloud Build workspace is /workspace)
+          sh /workspace/scripts/terraform-import.sh "google_bigquery_dataset.datasets[\"$$DATASET_ID\"]" "projects/$$PROJECT_ID/datasets/$$DATASET_ID" --non-critical
+        done
+        echo ""
+        echo "Removing deprecated time tracking resources from state (if present)..."
+        # Remove time tracking resources from state if they exist
+        # These resources were removed from Terraform code but may still be in state
+        # Removing from state allows them to remain in GCP without Terraform management
+        if terraform state show "google_bigquery_table.workday_hcm_time_tracking_calculated_time_block" >/dev/null 2>&1; then
+          echo "Removing workday_hcm_time_tracking_calculated_time_block from state"
+          terraform state rm "google_bigquery_table.workday_hcm_time_tracking_calculated_time_block" || echo "WARNING: Failed to remove from state (may have been removed already)"
+        fi
+        if terraform state show "google_bigquery_table.workday_hcm_time_tracking_calculation_tag" >/dev/null 2>&1; then
+          echo "Removing workday_hcm_time_tracking_calculation_tag from state"
+          terraform state rm "google_bigquery_table.workday_hcm_time_tracking_calculation_tag" || echo "WARNING: Failed to remove from state (may have been removed already)"
+        fi
+        if terraform state show "google_bigquery_dataset.datasets[\"raw_fivetran_workday_hcm_time_tracking\"]" >/dev/null 2>&1; then
+          echo "Removing raw_fivetran_workday_hcm_time_tracking dataset from state"
+          terraform state rm "google_bigquery_dataset.datasets[\"raw_fivetran_workday_hcm_time_tracking\"]" || echo "WARNING: Failed to remove from state (may have been removed already)"
+        fi
+    id: 'import-bq'
+    waitFor: ['validate-bq']
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
+    # Note: This step will fail if permission errors occur (critical - will exit with error)
+    # Non-critical failures (dataset doesn't exist, already in state) are logged as warnings
+
+  # Step 7: Plan BigQuery Infrastructure
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cd bq_objects/terraform
+        terraform plan \
+          -out=tfplan-bq \
+          -var-file=${_TFVARS_FILE}
+        # Note: Removed -detailed-exitcode to avoid build failure on exit code 2 (changes detected)
+        # Exit code 2 is normal when changes are detected, not an error
+    id: 'plan-bq'
+    waitFor: ['import-bq']
+    timeout: '600s'  # 10 minutes timeout for plan operation
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
+    # Note: Plan files are persisted as artifacts at build level (see artifacts section below)
+
+  # Step 7b: Detect Schema Drift on Fivetran Tables
+  # This step analyzes the Terraform plan to detect any changes on Fivetran-managed tables.
+  # Lifecycle blocks prevent schema changes from being applied, but we log them for visibility.
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        # Install jq and bash if not available
+        if ! command -v jq &> /dev/null; then
+          echo "Installing jq for JSON parsing..."
+          if apk add --no-cache jq 2>/dev/null; then
+            echo "✓ jq installed via apk"
+          elif apt-get update && apt-get install -y jq 2>/dev/null; then
+            echo "✓ jq installed via apt-get"
+          elif yum install -y jq 2>/dev/null; then
+            echo "✓ jq installed via yum"
+          else
+            echo "WARNING: jq not available, using fallback detection method"
+          fi
+        fi
+        # Install bash if not available (needed for script execution)
+        if ! command -v bash &> /dev/null; then
+          echo "Installing bash..."
+          if apk add --no-cache bash 2>/dev/null; then
+            echo "✓ bash installed via apk"
+          elif apt-get update && apt-get install -y bash 2>/dev/null; then
+            echo "✓ bash installed via apt-get"
+          elif yum install -y bash 2>/dev/null; then
+            echo "✓ bash installed via yum"
+          else
+            echo "WARNING: bash not available, will try with sh"
+          fi
+        fi
+        # Run schema drift detection script
+        # Script is located in bq_objects/terraform/scripts/ since it's bq_objects-specific
+        cd bq_objects/terraform
+        # Use literal path to avoid Cloud Build substitution variable interpretation
+        if [ -f "scripts/detect-schema-drift.sh" ]; then
+          echo "Found script at: scripts/detect-schema-drift.sh"
+          chmod +x scripts/detect-schema-drift.sh
+          # Use ./ prefix to let shebang handle interpreter, or fallback to sh
+          if command -v bash &> /dev/null; then
+            ./scripts/detect-schema-drift.sh tfplan-bq .
+          else
+            sh scripts/detect-schema-drift.sh tfplan-bq .
+          fi
+        else
+          echo "WARNING: detect-schema-drift.sh not found at scripts/detect-schema-drift.sh"
+          echo "Current directory: $$(pwd)"
+          echo "Listing scripts directory:"
+          ls -la scripts/ 2>/dev/null || echo "scripts/ directory does not exist"
+          echo "Skipping drift detection"
+        fi
+        # Script always exits 0 to never fail the build
+    id: 'detect-drift-bq'
+    waitFor: ['plan-bq']
+    timeout: '120s'  # 2 minutes timeout for drift detection
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
+    # Note: BUILD_ID and PROJECT_ID are automatically available as built-in Cloud Build variables
+    # Note: This step never fails the build (exit 0 always)
+    # It's informational only - lifecycle blocks prevent schema changes from being applied
+
+  # ============================================
+  # Apply Steps (Require Manual Approval)
+  # ============================================
+  # IMPORTANT: These apply steps create/modify GCP resources.
+  # These steps only execute when _RUN_APPLY is set to "true".
+  #
+  # Two-Trigger Pattern:
+  # - Preview Trigger (plan-only): Sets _RUN_APPLY=false or omits it
+  #   - Runs on merge to dev/main branches
+  #   - Executes plan steps only, no apply
+  #   - Used for reviewing infrastructure changes
+  # - Deploy Trigger (apply): Sets _RUN_APPLY=true
+  #   - Manual invocation or separate trigger
+  #   - REQUIRES MANUAL APPROVAL at trigger level
+  #   - Executes apply steps after approval
+  #
+  # Configure approval gates in Cloud Build trigger settings:
+  # - Go to Cloud Build > Triggers > [Deploy Trigger] > Edit
+  # - Enable "Require approval before build executes"
+  # - This ensures all resource creation requires explicit approval
+
+  # Step 8: Apply BigQuery Infrastructure
+  # Only executes when _RUN_APPLY is set to "true"
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        # Check if apply steps should run
+        if [ "${_RUN_APPLY}" != "true" ]; then
+          echo "Skipping apply step (plan-only mode). Set _RUN_APPLY=true to execute apply."
+          exit 0
+        fi
+        cd bq_objects/terraform
+        # Validate plan file exists before applying
+        if [ ! -f "tfplan-bq" ]; then
+          echo "ERROR: Plan file tfplan-bq not found"
+          echo "This indicates the plan step failed or the workspace was cleaned"
+          exit 1
+        fi
+        # Validate plan file is not empty
+        if [ ! -s "tfplan-bq" ]; then
+          echo "ERROR: Plan file tfplan-bq is empty"
+          exit 1
+        fi
+        # Validate plan file is not corrupted (JSON validation)
+        if ! terraform show -json tfplan-bq >/dev/null 2>&1; then
+          echo "ERROR: Plan file tfplan-bq is invalid or corrupted (JSON validation failed)"
+          exit 1
+        fi
+        # Validate plan file structure (basic sanity check)
+        PLAN_SIZE=$$(stat -f%z tfplan-bq 2>/dev/null || stat -c%s tfplan-bq 2>/dev/null || echo "0")
+        if [ "$$PLAN_SIZE" -lt 100 ]; then
+          echo "ERROR: Plan file tfplan-bq is suspiciously small ($$PLAN_SIZE bytes) - likely corrupted"
+          exit 1
+        fi
+        echo "Plan file validation passed (size: $$PLAN_SIZE bytes)"
+        terraform apply -auto-approve tfplan-bq
+    id: 'apply-bq'
+    waitFor: ['detect-drift-bq']
+    timeout: '900s'  # 15 minutes timeout for apply operation
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
+
+  # Step 9: Apply POS Ingestion Infrastructure
+  # Only executes when _RUN_APPLY is set to "true"
+  # Note: Runs after apply-bq to ensure BigQuery infrastructure is deployed first
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        # Check if apply steps should run
+        if [ "${_RUN_APPLY}" != "true" ]; then
+          echo "Skipping apply step (plan-only mode). Set _RUN_APPLY=true to execute apply."
+          exit 0
+        fi
+        cd pos_ingestion/terraform
+        # Validate plan file exists before applying
+        if [ ! -f "tfplan-pos" ]; then
+          echo "ERROR: Plan file tfplan-pos not found"
+          echo "This indicates the plan step failed or the workspace was cleaned"
+          exit 1
+        fi
+        # Validate plan file is not empty
+        if [ ! -s "tfplan-pos" ]; then
+          echo "ERROR: Plan file tfplan-pos is empty"
+          exit 1
+        fi
+        # Validate plan file is not corrupted (JSON validation)
+        if ! terraform show -json tfplan-pos >/dev/null 2>&1; then
+          echo "ERROR: Plan file tfplan-pos is invalid or corrupted (JSON validation failed)"
+          exit 1
+        fi
+        # Validate plan file structure (basic sanity check)
+        PLAN_SIZE=$$(stat -f%z tfplan-pos 2>/dev/null || stat -c%s tfplan-pos 2>/dev/null || echo "0")
+        if [ "$$PLAN_SIZE" -lt 100 ]; then
+          echo "ERROR: Plan file tfplan-pos is suspiciously small ($$PLAN_SIZE bytes) - likely corrupted"
+          exit 1
+        fi
+        echo "Plan file validation passed (size: $$PLAN_SIZE bytes)"
+        terraform apply -auto-approve tfplan-pos
+    id: 'apply-pos'
+    waitFor: ['apply-bq']  # Run after BigQuery infrastructure is deployed
+    timeout: '900s'  # 15 minutes timeout for apply operation
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
+
+# Artifacts: Persist Terraform plan files for auditability and debugging
+# Artifacts are stored in GCS bucket for review after build completion
+# Cost: ~$0.01-0.10/month (plan files are typically 10-500 KB each)
+# Lifecycle policy recommended: auto-delete artifacts older than 90 days
+artifacts:
+  objects:
+    location: 'gs://${_TERRAFORM_STATE_BUCKET}/build-artifacts/${BUILD_ID}/'
+    paths:
+      - 'pos_ingestion/terraform/tfplan-pos'
+      - 'bq_objects/terraform/tfplan-bq'
+
+# Cloud Build options
+options:
+  # Using E2 machine type for universal region support (N1 deprecated in some regions)
+  machineType: 'E2_MEDIUM'
+  # Logging enabled - roles/logging.logWriter permission granted to Cloud Build SA
+  logging: CLOUD_LOGGING_ONLY
+  env:
+    - 'TF_INPUT=false'
+
+# ============================================
+# Substitution Variables (Single Source of Truth)
+# ============================================
+# All substitution variables MUST be set in Cloud Build trigger configuration.
+# Default values below are placeholders and will cause deployment errors if used.
+#
+# Required Variables:
+#   _TERRAFORM_STATE_BUCKET: GCS bucket for Terraform state (e.g., 'amerch-terraform-state')
+#   _TERRAFORM_STATE_PREFIX: State prefix path (e.g., 'bq_dataflow/dev' or 'bq_dataflow/prod')
+#   _TFVARS_FILE: Terraform variables file (e.g., 'terraform.tfvars.dev' or 'terraform.tfvars.prod')
+#   _TERRAFORM_SERVICE_ACCOUNT: Service account for Terraform operations (e.g., 'terraform-demo@quantiphi-test-470710.iam.gserviceaccount.com')
+#   _RUN_APPLY: 'false' for preview triggers, 'true' for deploy triggers
+#
+# Environment-Specific Values:
+#   Dev:  _TERRAFORM_STATE_BUCKET=amerch-terraform-state, _TERRAFORM_STATE_PREFIX=bq_dataflow/dev, _TFVARS_FILE=terraform.tfvars.dev, _TERRAFORM_SERVICE_ACCOUNT=terraform-demo@quantiphi-test-470710.iam.gserviceaccount.com
+#   Prod: _TERRAFORM_STATE_BUCKET=amerch-terraform-state, _TERRAFORM_STATE_PREFIX=bq_dataflow/prod, _TFVARS_FILE=terraform.tfvars.prod, _TERRAFORM_SERVICE_ACCOUNT=sa-bq-tf-admin@amerchgcp-amerch-prod.iam.gserviceaccount.com
+#
+# Two-Trigger Pattern:
+#   Preview: _RUN_APPLY=false (or omit), no approval required, auto-triggered on branch merge
+#   Deploy:  _RUN_APPLY=true, approval required, manual invocation
+#
+# Note: Bucket name is automatically extracted from terraform.tfvars file (no _BUCKET_NAME needed)
+substitutions:
+  _TERRAFORM_STATE_BUCKET: 'amerch-terraform-state'
+  _TERRAFORM_STATE_PREFIX: 'bq_dataflow/dev'
+  _TFVARS_FILE: 'terraform.tfvars.dev'
+  _TERRAFORM_SERVICE_ACCOUNT: 'terraform-demo@quantiphi-test-470710.iam.gserviceaccount.com'
+  _RUN_APPLY: 'false'  # Defaults to 'false' (plan-only). Set to 'true' in deploy triggers to execute apply steps
+
+# Timeout for the entire build
+timeout: '1200s'
+
+# Service account for Cloud Build
+# This should be set at the trigger level to use the Cloud Build service account
+# Dev: sa-cb-amerch-dev@cicd-shared-414116.iam.gserviceaccount.com (or sa-cb-amerchdt-dev@cicd-shared-414116.iam.gserviceaccount.com)
+#
+# Credential Strategy:
+# - Backend (state bucket): Uses Cloud Build SA credentials directly (init steps don't use impersonation)
+#   - Cloud Build SA has roles/storage.objectAdmin on amerch-terraform-state bucket
+# - Provider (infrastructure): Uses impersonation via GOOGLE_IMPERSONATE_SERVICE_ACCOUNT (all other steps)
+#   - Terraform runs as terraform-demo@quantiphi-test-470710.iam.gserviceaccount.com (has all required permissions)
+# serviceAccount: 'projects/quantiphi-test-470710/serviceAccounts/sa-cb-amerch-dev@cicd-shared-414116.iam.gserviceaccount.com'

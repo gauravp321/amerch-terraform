@@ -1,0 +1,27 @@
+# Terraform variable values for production environment
+# Copy this file to terraform.tfvars.prod and update values as needed
+# DO NOT commit terraform.tfvars.prod to version control if it contains sensitive values
+
+# Production project ID (update with actual production project)
+project_id = "amerchgcp-amerch-prod"
+region     = "us-central1"
+
+# Production bucket name (update with actual production bucket name)
+bucket_name   = "amerch-pos-files-prod"
+function_name = "gcf_pos_file"
+
+# Production service account (update with actual production service account)
+service_account_email = "cfndl-pos-files@amerchgcp-amerch-prod.iam.gserviceaccount.com"
+
+# Security and resource management
+environment              = "prod"
+cost_center              = "data-engineering"
+cloud_function_trigger   = "trigger-pos-file"
+email_enabled            = "TRUE"
+enable_bucket_versioning = true
+retention_policy_locked  = true  # Lock retention policy in production for compliance
+# kms_key_name = "projects/amerchgcp-amerch-prod/locations/us-central1/keyRings/pos-keyring/cryptoKeys/pos-key"  # Use CMEK in production
+
+# Optional: Specify a custom name for the Cloud Function source bucket
+# If not specified, will default to "${bucket_name}-gcf-source"
+# function_source_bucket_name = "amerch-pos-files-prod-gcf-source"
