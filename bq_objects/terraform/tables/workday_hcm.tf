@@ -600,8 +600,7 @@ resource "google_bigquery_table" "workday_hcm_worker" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -848,7 +847,7 @@ resource "google_bigquery_table" "workday_hcm_organization" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -976,7 +975,7 @@ resource "google_bigquery_table" "workday_hcm_location" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -1170,7 +1169,7 @@ resource "google_bigquery_table" "workday_hcm_job_profile" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -1422,7 +1421,7 @@ resource "google_bigquery_table" "workday_hcm_person_name" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -1590,7 +1589,7 @@ resource "google_bigquery_table" "workday_hcm_address" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -2040,7 +2039,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -2368,7 +2367,7 @@ resource "google_bigquery_table" "workday_hcm_worker_leave_status" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -2436,7 +2435,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_manager" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_worker,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -2583,7 +2582,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_organization" {
   depends_on = [
     google_bigquery_table.workday_hcm_worker,
     google_bigquery_table.workday_hcm_organization,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -2687,7 +2686,7 @@ resource "google_bigquery_table" "workday_hcm_organization_hierarchy_detail" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_organization,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -2789,7 +2788,7 @@ resource "google_bigquery_table" "workday_hcm_supervisory_organization_location"
 
   depends_on = [
     google_bigquery_table.workday_hcm_organization,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -2897,7 +2896,7 @@ resource "google_bigquery_table" "workday_hcm_address_line" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -2993,7 +2992,7 @@ resource "google_bigquery_table" "workday_hcm_address_subregion" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -3083,7 +3082,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_tenanted_reference
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -3172,7 +3171,7 @@ resource "google_bigquery_table" "workday_hcm_address_usage_type" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -3261,7 +3260,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_reference" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
