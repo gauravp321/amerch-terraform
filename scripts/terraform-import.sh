@@ -43,12 +43,12 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     *)
-      echo "$3"
-      VAR_FILE="$3"
       if [ -z "$RESOURCE_ADDRESS" ]; then
         RESOURCE_ADDRESS="$1"
       elif [ -z "$RESOURCE_ID" ]; then
         RESOURCE_ID="$1"
+      elif [ -z "$VAR_FILE" ]; then
+        VAR_FILE="$1"
       else
         echo -e "${RED}ERROR: Unexpected argument: $1${NC}" >&2
         exit 1
