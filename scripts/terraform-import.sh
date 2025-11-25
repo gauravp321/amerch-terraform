@@ -28,6 +28,7 @@ NC='\033[0m' # No Color
 # Parse arguments
 RESOURCE_ADDRESS=""
 RESOURCE_ID=""
+VAR_FILE=""
 SKIP_STATE_CHECK=false
 NON_CRITICAL=false
 
@@ -46,6 +47,8 @@ while [ $# -gt 0 ]; do
         RESOURCE_ADDRESS="$1"
       elif [ -z "$RESOURCE_ID" ]; then
         RESOURCE_ID="$1"
+      elif [ -z "$VAR_FILE" ]; then
+        VAR_FILE="$1"
       else
         echo -e "${RED}ERROR: Unexpected argument: $1${NC}" >&2
         exit 1
@@ -117,8 +120,26 @@ main() {
   fi
 
   # Attempt import
-  IMPORT_OUTPUT=$(terraform import "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
+  # IMPORT_OUTPUT=$(terraform import "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
+
+  if [ -n "$VAR_FILE" ]; then
+    if [ ! -f "$VAR_FILE" ]; then
+      echo -e "${RED}ERROR: Given variables file ${VAR_FILE} does not exist${NC}" >&2
+      exit 1
+    fi
+    set -- terraform import -var-file="$VAR_FILE" "$RESOURCE_ADDRESS" "$RESOURCE_ID"
+  else
+    set -- terraform import "$RESOURCE_ADDRESS" "$RESOURCE_ID"
+  fi
+
+  echo "import running"
+
+  IMPORT_OUTPUT=$("$@" 2>&1)
   IMPORT_EXIT=$?
+
+  echo "import completed"
+
+  echo -e "Import output : ${IMPORT_OUTPUT};  Import exit ${IMPORT_EXIT}"
 
   if [ $IMPORT_EXIT -eq 0 ]; then
     echo -e "${GREEN}✓ Successfully imported ${RESOURCE_ADDRESS}${NC}"
