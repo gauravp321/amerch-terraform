@@ -152,9 +152,9 @@ steps:
         echo "Attempting to import existing buckets..."
         # Use reusable import script for consistent error handling
         # Use absolute path from workspace root (Cloud Build workspace is /workspace)
-        sh /workspace/scripts/terraform-import.sh google_storage_bucket.pos_files "$$BUCKET_NAME" "${_TFVARS_FILE}" --non-critical
+        sh /workspace/scripts/terraform-import.sh google_storage_bucket.pos_files "$$BUCKET_NAME" --non-critical
         FUNCTION_BUCKET="$${BUCKET_NAME}-gcf-source"
-        sh /workspace/scripts/terraform-import.sh google_storage_bucket.function_source "$$FUNCTION_BUCKET" "${_TFVARS_FILE}" --non-critical
+        sh /workspace/scripts/terraform-import.sh google_storage_bucket.function_source "$$FUNCTION_BUCKET" --non-critical
         echo "✓ import-pos passed"
     id: 'import-pos'
     waitFor: ['validate-pos']
@@ -210,6 +210,12 @@ steps:
           -backend-config="bucket=${_TERRAFORM_STATE_BUCKET}" \
           -backend-config="prefix=${_TERRAFORM_STATE_PREFIX}/bq_objects"
     id: 'init-bq'
+    volumes:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
+    mounts:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
     env:
       - 'TF_IN_AUTOMATION=true'
       # Note: No GOOGLE_IMPERSONATE_SERVICE_ACCOUNT here - backend uses Cloud Build SA credentials
@@ -283,6 +289,12 @@ steps:
         echo ""
     id: 'validate-env-bq'
     waitFor: ['init-bq']
+    volumes:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
+    mounts:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
     env:
       - 'TF_IN_AUTOMATION=true'
       # Note: BRANCH_NAME is a built-in Cloud Build variable (if available)
@@ -380,12 +392,23 @@ steps:
     id: 'plan-bq'
     waitFor: ['import-bq']
     timeout: '600s'  # 10 minutes timeout for plan operation
+    volumes:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
+    mounts:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
     env:
       - 'TF_IN_AUTOMATION=true'
       - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
     # Note: Plan files are persisted as artifacts at build level (see artifacts section below)
 
-     # Add after plan-bq step
+  # Step 7b: Detect Schema Drift on Fivetran Tables
+  # This step analyzes the Terraform plan to detect any changes on Fivetran-managed tables.
+  # Lifecycle blocks prevent schema changes from being applied, but we log them for visibility.
+
+
+   # Add after plan-bq step
   - name: 'hashicorp/terraform:1.5.7'
     entrypoint: 'sh'
     args:
@@ -401,9 +424,7 @@ steps:
     waitFor: ['plan-bq']
     # Add after plan-bq step
 
-  # Step 7b: Detect Schema Drift on Fivetran Tables
-  # This step analyzes the Terraform plan to detect any changes on Fivetran-managed tables.
-  # Lifecycle blocks prevent schema changes from being applied, but we log them for visibility.
+
   - name: 'hashicorp/terraform:1.5.7'
     entrypoint: 'sh'
     args:
@@ -623,7 +644,7 @@ substitutions:
   _TERRAFORM_STATE_PREFIX: 'bq_dataflow/dev'
   _TFVARS_FILE: 'terraform.tfvars.dev'
   _TERRAFORM_SERVICE_ACCOUNT: 'terraform-demo@quantiphi-test-470710.iam.gserviceaccount.com'
-  _RUN_APPLY: 'false'  # Defaults to 'false' (plan-only). Set to 'true' in deploy triggers to execute apply steps
+  _RUN_APPLY: 'true'  # Defaults to 'false' (plan-only). Set to 'true' in deploy triggers to execute apply steps
 
 # Timeout for the entire build
 timeout: '1200s'
