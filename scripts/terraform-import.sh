@@ -120,6 +120,8 @@ main() {
   IMPORT_OUTPUT=$(terraform import "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
   IMPORT_EXIT=$?
 
+  echo -e "Import output : ${IMPORT_OUTPUT};  Import exit ${IMPORT_EXIT}"
+
   if [ $IMPORT_EXIT -eq 0 ]; then
     echo -e "${GREEN}✓ Successfully imported ${RESOURCE_ADDRESS}${NC}"
     return 0
