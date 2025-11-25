@@ -522,7 +522,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fields" {
 
   depends_on = [
     google_bigquery_table.gcloud_mysql_performance_ninja_templates,
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -636,7 +636,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_responses" {
 
   labels = merge(local.labels, local.lineage_labels_mysql)
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -752,7 +752,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldresponses"
   depends_on = [
     google_bigquery_table.gcloud_mysql_performance_ninja_fields,
     google_bigquery_table.gcloud_mysql_performance_ninja_responses,
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -884,7 +884,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datapoints" {
 
   labels = merge(local.labels, local.lineage_labels_mysql)
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -1019,7 +1019,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
 
   labels = merge(local.labels, local.lineage_labels_mysql)
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -1135,7 +1135,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_collectionreque
     google_bigquery_table.gcloud_mysql_performance_coreapp_stores,
     google_bigquery_table.gcloud_mysql_performance_employee_employees,
     google_bigquery_table.gcloud_mysql_performance_activity_activities,
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -1369,7 +1369,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
   ]
 
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"],
+    google_bigquery_dataset.datasets,
     google_bigquery_table.gcloud_mysql_performance_item_items,
     google_bigquery_table.gcloud_mysql_performance_coreapp_stores,
     google_bigquery_table.gcloud_mysql_performance_employee_employees,
@@ -1602,7 +1602,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_aimmscandetails
 
   labels = merge(local.labels, local.lineage_labels_mysql)
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -1718,7 +1718,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_tags" {
 
   labels = merge(local.labels, local.lineage_labels_mysql)
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -1809,7 +1809,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldtags" {
   ]
 
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"],
+    google_bigquery_dataset.datasets,
     google_bigquery_table.gcloud_mysql_performance_ninja_fields,
     google_bigquery_table.gcloud_mysql_performance_ninja_tags,
   ]
