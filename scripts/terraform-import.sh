@@ -122,7 +122,12 @@ main() {
   # Attempt import
 
   # IMPORT_OUTPUT=$(terraform import "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
+  echo "import running"
+  
+  terraform import -var-file="$VAR_FILE" "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1
 
+  echo "import succesffully ran"
+  
   IMPORT_OUTPUT=$(terraform import -var-file="$VAR_FILE" "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
   IMPORT_EXIT=$?
 
