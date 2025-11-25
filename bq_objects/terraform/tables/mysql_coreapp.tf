@@ -464,6 +464,9 @@ resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_stores" {
   }
 
   labels = merge(local.labels, local.lineage_labels_mysql)
+  depends_on = [
+    google_bigquery_dataset.datasets["${var.gcloud_mysql_dataset_prefix}_coreapp"]
+  ]
   lifecycle {
     ignore_changes = [
       schema,
