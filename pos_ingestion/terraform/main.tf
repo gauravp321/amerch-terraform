@@ -17,10 +17,10 @@ terraform {
   }
 }
 
-import {
-  id = "eventarc-gp74"
-  to = google_storage_bucket.pos_files
-}
+# import {
+#   id = "eventarc-gp74"
+#   to = google_storage_bucket.pos_files
+# }
 
 provider "google" {
   project = var.project_id
