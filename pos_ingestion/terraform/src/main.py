@@ -40,6 +40,8 @@ TIMEOUT_SECONDS = int(os.environ.get('TIMEOUT_SECONDS', '540'))
 BAD_RECORD_THRESHOLD = int(os.environ.get('BAD_RECORD_THRESHOLD', '10'))
 
 
+
+
 def _get_secret(project_id: str, secret_id: str) -> str:
     """Get secret from Secret Manager. Raises SecretError if secret not found or access denied."""
     global _secret_client
