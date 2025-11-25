@@ -43,6 +43,7 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     *)
+      echo "$3"
       VAR_FILE="$3"
       if [ -z "$RESOURCE_ADDRESS" ]; then
         RESOURCE_ADDRESS="$1"
@@ -122,7 +123,7 @@ main() {
 
   # IMPORT_OUTPUT=$(terraform import "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
 
-  IMPORT_OUTPUT=$(terraform import -var-file=$VAR_FILE ${RESOURCE_ADDRESS} ${RESOURCE_ID} 2>&1)
+  IMPORT_OUTPUT=$(terraform import -var-file="$VAR_FILE" "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
   IMPORT_EXIT=$?
 
   echo -e "Import output : ${IMPORT_OUTPUT};  Import exit ${IMPORT_EXIT}"
