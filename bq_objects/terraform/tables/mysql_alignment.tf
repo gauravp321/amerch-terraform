@@ -107,6 +107,9 @@ resource "google_bigquery_table" "gcloud_mysql_performance_alignment_alignments_
   }
 
   labels = merge(local.labels, local.lineage_labels_mysql)
+  depends_on = [
+    google_bigquery_dataset.datasets["${var.gcloud_mysql_dataset_prefix}_alignment"]
+  ]
   lifecycle {
     ignore_changes = [
       schema,
