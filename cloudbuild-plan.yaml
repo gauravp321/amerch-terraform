@@ -152,9 +152,9 @@ steps:
         echo "Attempting to import existing buckets..."
         # Use reusable import script for consistent error handling
         # Use absolute path from workspace root (Cloud Build workspace is /workspace)
-        sh /workspace/scripts/terraform-import.sh google_storage_bucket.pos_files "$$BUCKET_NAME" "$$_TFVARS_FILE" --non-critical
+        sh /workspace/scripts/terraform-import.sh google_storage_bucket.pos_files "$$BUCKET_NAME" "${_TFVARS_FILE}" --non-critical
         FUNCTION_BUCKET="$${BUCKET_NAME}-gcf-source"
-        sh /workspace/scripts/terraform-import.sh google_storage_bucket.function_source "$$FUNCTION_BUCKET" "$$_TFVARS_FILE" --non-critical
+        sh /workspace/scripts/terraform-import.sh google_storage_bucket.function_source "$$FUNCTION_BUCKET" "${_TFVARS_FILE}" --non-critical
         echo "✓ import-pos passed"
     id: 'import-pos'
     waitFor: ['validate-pos']
