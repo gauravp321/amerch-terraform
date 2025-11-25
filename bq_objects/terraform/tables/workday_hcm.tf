@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "workday_hcm_worker" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "worker"
 
   description = "This table stores comprehensive information about workers in the Workday HCM system. It tracks employment status, dates, compensation, and other worker-related attributes."
@@ -601,7 +601,7 @@ resource "google_bigquery_table" "workday_hcm_worker" {
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
     google_bigquery_dataset.datasets,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
   lifecycle {
     ignore_changes = [
@@ -611,14 +611,14 @@ resource "google_bigquery_table" "workday_hcm_worker" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_organization" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "organization"
 
   description = "This table stores information about the structure of the company. It defines the different units within the organization and includes details about the hierarchy and characteristics of each unit."
@@ -823,7 +823,7 @@ resource "google_bigquery_table" "workday_hcm_organization" {
     # foreign_keys {
     #   name = "fk_organization_superior_organization"
     #   referenced_table {
-    #     dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+    #     dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
     #     project_id = var.project_id
     #     table_id   = "organization"
     #   }
@@ -835,7 +835,7 @@ resource "google_bigquery_table" "workday_hcm_organization" {
     # foreign_keys {
     #   name = "fk_organization_top_level_organization"
     #   referenced_table {
-    #     dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+    #     dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
     #     project_id = var.project_id
     #     table_id   = "organization"
     #   }
@@ -848,7 +848,7 @@ resource "google_bigquery_table" "workday_hcm_organization" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
   lifecycle {
     ignore_changes = [
@@ -858,14 +858,14 @@ resource "google_bigquery_table" "workday_hcm_organization" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_organization'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_location" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "location"
 
   description = "This table stores information about physical locations. It includes details such as geographic coordinates and associated attributes."
@@ -976,7 +976,7 @@ resource "google_bigquery_table" "workday_hcm_location" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
   lifecycle {
     ignore_changes = [
@@ -986,14 +986,14 @@ resource "google_bigquery_table" "workday_hcm_location" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_location'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_job_profile" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "job_profile"
 
   description = "This table stores information about job profiles within the organization. It includes details on job requirements, characteristics, and classifications."
@@ -1170,7 +1170,7 @@ resource "google_bigquery_table" "workday_hcm_job_profile" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
   lifecycle {
     ignore_changes = [
@@ -1180,14 +1180,14 @@ resource "google_bigquery_table" "workday_hcm_job_profile" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_job_profile'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_person_name" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "person_name"
 
   description = "This table stores various name components associated with individuals. It captures different representations of a person's name, including local variations and titles."
@@ -1409,7 +1409,7 @@ resource "google_bigquery_table" "workday_hcm_person_name" {
     foreign_keys {
       name = "fk_person_name_worker"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "worker"
       }
@@ -1422,7 +1422,7 @@ resource "google_bigquery_table" "workday_hcm_person_name" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
   lifecycle {
     ignore_changes = [
@@ -1432,14 +1432,14 @@ resource "google_bigquery_table" "workday_hcm_person_name" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_person_name'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_address" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "address"
 
   description = "This table stores address information. It includes details about the location, such as city, municipality, and country."
@@ -1577,7 +1577,7 @@ resource "google_bigquery_table" "workday_hcm_address" {
     foreign_keys {
       name = "fk_address_worker"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "worker"
       }
@@ -1590,7 +1590,7 @@ resource "google_bigquery_table" "workday_hcm_address" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
   lifecycle {
     ignore_changes = [
@@ -1600,14 +1600,14 @@ resource "google_bigquery_table" "workday_hcm_address" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_worker_position" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "worker_position"
 
   description = "This table stores data about worker positions within the organization. It tracks details related to employment terms, work schedules, and compensation."
@@ -2015,7 +2015,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position" {
     foreign_keys {
       name = "fk_wp_worker"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "worker"
       }
@@ -2027,7 +2027,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position" {
     foreign_keys {
       name = "fk_wp_job_profile"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "job_profile"
       }
@@ -2040,7 +2040,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
   lifecycle {
     ignore_changes = [
@@ -2050,14 +2050,14 @@ resource "google_bigquery_table" "workday_hcm_worker_position" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker_position'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_worker_leave_status" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "worker_leave_status"
 
   description = "This table stores information on worker leave statuses. It tracks various types of leave, including dates, reasons, and related events."
@@ -2355,7 +2355,7 @@ resource "google_bigquery_table" "workday_hcm_worker_leave_status" {
     foreign_keys {
       name = "fk_wls_worker"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "worker"
       }
@@ -2368,7 +2368,7 @@ resource "google_bigquery_table" "workday_hcm_worker_leave_status" {
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
   depends_on = [
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
   lifecycle {
     ignore_changes = [
@@ -2378,14 +2378,14 @@ resource "google_bigquery_table" "workday_hcm_worker_leave_status" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker_leave_status'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_worker_position_manager" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "worker_position_manager"
 
   description = "This table stores the hierarchical management structure within the organization. It defines the relationships between workers and their managers."
@@ -2436,7 +2436,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_manager" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_worker,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
 
   table_constraints {
@@ -2450,7 +2450,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_manager" {
     foreign_keys {
       name = "fk_wpm_worker"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "worker"
       }
@@ -2462,7 +2462,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_manager" {
     foreign_keys {
       name = "fk_wpm_manager"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "worker"
       }
@@ -2482,14 +2482,14 @@ resource "google_bigquery_table" "workday_hcm_worker_position_manager" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker_position_manager'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_worker_position_organization" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "worker_position_organization"
 
   description = "This table stores information about worker assignments to organizations within a company. It tracks the organizational affiliations of each worker."
@@ -2583,7 +2583,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_organization" {
   depends_on = [
     google_bigquery_table.workday_hcm_worker,
     google_bigquery_table.workday_hcm_organization,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
 
   table_constraints {
@@ -2597,7 +2597,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_organization" {
     foreign_keys {
       name = "fk_wpo_worker"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "worker"
       }
@@ -2609,7 +2609,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_organization" {
     foreign_keys {
       name = "fk_wpo_organization"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "organization"
       }
@@ -2629,14 +2629,14 @@ resource "google_bigquery_table" "workday_hcm_worker_position_organization" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker_position_organization'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_organization_hierarchy_detail" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "organization_hierarchy_detail"
 
   description = "This table stores the hierarchical relationships between organizations within a company. It defines the structure of the organization."
@@ -2687,7 +2687,7 @@ resource "google_bigquery_table" "workday_hcm_organization_hierarchy_detail" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_organization,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
 
   table_constraints {
@@ -2700,7 +2700,7 @@ resource "google_bigquery_table" "workday_hcm_organization_hierarchy_detail" {
     foreign_keys {
       name = "fk_ohd_organization"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "organization"
       }
@@ -2712,7 +2712,7 @@ resource "google_bigquery_table" "workday_hcm_organization_hierarchy_detail" {
     foreign_keys {
       name = "fk_ohd_linked_organization"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "organization"
       }
@@ -2732,14 +2732,14 @@ resource "google_bigquery_table" "workday_hcm_organization_hierarchy_detail" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_organization_hierarchy_detail'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_supervisory_organization_location" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "supervisory_organization_location"
 
   description = "This table stores the association between supervisory organizations and their physical locations. It tracks which locations are assigned to specific organizations."
@@ -2789,7 +2789,7 @@ resource "google_bigquery_table" "workday_hcm_supervisory_organization_location"
 
   depends_on = [
     google_bigquery_table.workday_hcm_organization,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
 
   table_constraints {
@@ -2802,7 +2802,7 @@ resource "google_bigquery_table" "workday_hcm_supervisory_organization_location"
     foreign_keys {
       name = "fk_sol_organization"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "organization"
       }
@@ -2814,7 +2814,7 @@ resource "google_bigquery_table" "workday_hcm_supervisory_organization_location"
     foreign_keys {
       name = "fk_sol_location"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "location"
       }
@@ -2834,14 +2834,14 @@ resource "google_bigquery_table" "workday_hcm_supervisory_organization_location"
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_supervisory_organization_location'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_address_line" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "address_line"
 
   description = "This table stores address details. It organizes address information into multiple lines."
@@ -2897,7 +2897,7 @@ resource "google_bigquery_table" "workday_hcm_address_line" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
 
   table_constraints {
@@ -2910,7 +2910,7 @@ resource "google_bigquery_table" "workday_hcm_address_line" {
     foreign_keys {
       name = "fk_address_line_address"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "address"
       }
@@ -2930,14 +2930,14 @@ resource "google_bigquery_table" "workday_hcm_address_line" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_line'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_address_subregion" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "address_subregion"
 
   description = "This table stores information about address subregions. It tracks the association between addresses and their corresponding subregion details."
@@ -2993,7 +2993,7 @@ resource "google_bigquery_table" "workday_hcm_address_subregion" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
 
   table_constraints {
@@ -3006,7 +3006,7 @@ resource "google_bigquery_table" "workday_hcm_address_subregion" {
     foreign_keys {
       name = "fk_address_subregion_address"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "address"
       }
@@ -3026,14 +3026,14 @@ resource "google_bigquery_table" "workday_hcm_address_subregion" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_subregion'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_address_use_for_tenanted_reference" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "address_use_for_tenanted_reference"
 
   description = "This table stores information about the association between addresses and their usage within a tenanted system."
@@ -3083,7 +3083,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_tenanted_reference
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
 
   table_constraints {
@@ -3095,7 +3095,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_tenanted_reference
     foreign_keys {
       name = "fk_auftr_address"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "address"
       }
@@ -3115,14 +3115,14 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_tenanted_reference
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_use_for_tenanted_reference'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_address_usage_type" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "address_usage_type"
 
   description = "This table stores information about the usage of addresses. It tracks the association between addresses and their corresponding usage types."
@@ -3172,7 +3172,7 @@ resource "google_bigquery_table" "workday_hcm_address_usage_type" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
 
   table_constraints {
@@ -3184,7 +3184,7 @@ resource "google_bigquery_table" "workday_hcm_address_usage_type" {
     foreign_keys {
       name = "fk_aut_address"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "address"
       }
@@ -3204,14 +3204,14 @@ resource "google_bigquery_table" "workday_hcm_address_usage_type" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_usage_type'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "workday_hcm_address_use_for_reference" {
-  dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+  dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
   table_id   = "address_use_for_reference"
 
   description = "This table tracks the association between addresses and their intended uses within the Workday HCM system."
@@ -3261,7 +3261,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_reference" {
 
   depends_on = [
     google_bigquery_table.workday_hcm_address,
-    google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
+    google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix]
   ]
 
   table_constraints {
@@ -3273,7 +3273,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_reference" {
     foreign_keys {
       name = "fk_aufr_address"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"].dataset_id
+        dataset_id = google_bigquery_dataset.datasets[var.workday_hcm_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "address"
       }
@@ -3293,7 +3293,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_reference" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.workday_hcm_dataset_prefix}")
+      condition     = contains(keys(google_bigquery_dataset.datasets), var.workday_hcm_dataset_prefix)
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_use_for_reference'. Ensure the dataset is defined in var.datasets."
     }
   }
