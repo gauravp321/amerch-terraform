@@ -210,6 +210,12 @@ steps:
           -backend-config="bucket=${_TERRAFORM_STATE_BUCKET}" \
           -backend-config="prefix=${_TERRAFORM_STATE_PREFIX}/bq_objects"
     id: 'init-bq'
+    volumes:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
+    mounts:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
     env:
       - 'TF_IN_AUTOMATION=true'
       # Note: No GOOGLE_IMPERSONATE_SERVICE_ACCOUNT here - backend uses Cloud Build SA credentials
@@ -283,6 +289,12 @@ steps:
         echo ""
     id: 'validate-env-bq'
     waitFor: ['init-bq']
+    volumes:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
+    mounts:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
     env:
       - 'TF_IN_AUTOMATION=true'
       # Note: BRANCH_NAME is a built-in Cloud Build variable (if available)
@@ -380,6 +392,12 @@ steps:
     id: 'plan-bq'
     waitFor: ['import-bq']
     timeout: '600s'  # 10 minutes timeout for plan operation
+    volumes:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
+    mounts:
+      - name: bq-tables
+        path: /workspace/bq_objects/tables
     env:
       - 'TF_IN_AUTOMATION=true'
       - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
