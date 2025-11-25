@@ -288,13 +288,13 @@ steps:
         fi
         echo ""
     id: 'validate-env-bq'
+    waitFor: ['init-bq']
     volumes:
       - name: bq-tables
         path: /workspace/bq_objects/tables
     mounts:
       - name: bq-tables
         path: /workspace/bq_objects/tables
-    waitFor: ['init-bq']
     env:
       - 'TF_IN_AUTOMATION=true'
       # Note: BRANCH_NAME is a built-in Cloud Build variable (if available)
