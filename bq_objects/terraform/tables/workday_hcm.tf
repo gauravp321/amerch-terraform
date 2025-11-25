@@ -847,7 +847,7 @@ resource "google_bigquery_table" "workday_hcm_organization" {
   }
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
-  depends_on =[
+  depends_on = [
     google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
   ]
   lifecycle {
@@ -975,7 +975,7 @@ resource "google_bigquery_table" "workday_hcm_location" {
   }
 
   labels = merge(local.labels, local.lineage_labels_workday_hcm)
-  depends_on =[
+  depends_on = [
     google_bigquery_dataset.datasets["${var.workday_hcm_dataset_prefix}"]
   ]
   lifecycle {
