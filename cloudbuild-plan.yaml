@@ -385,6 +385,22 @@ steps:
       - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
     # Note: Plan files are persisted as artifacts at build level (see artifacts section below)
 
+     # Add after plan-bq step
+  - name: 'hashicorp/terraform:1.5.7'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cd bq_objects/terraform
+        echo "Checking plan for tables..."
+        terraform show -json tfplan-bq | jq '.resource_changes[] | select(.type == "google_bigquery_table") | .address' || echo "No tables found in plan"
+        echo ""
+        echo "Checking for precondition errors..."
+        terraform show tfplan-bq 2>&1 | grep -i "precondition\|error" || echo "No precondition errors found"
+    id: 'diagnose-plan-bq'
+    waitFor: ['plan-bq']
+    # Add after plan-bq step
+
   # Step 7b: Detect Schema Drift on Fivetran Tables
   # This step analyzes the Terraform plan to detect any changes on Fivetran-managed tables.
   # Lifecycle blocks prevent schema changes from being applied, but we log them for visibility.
