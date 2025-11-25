@@ -99,3 +99,15 @@ locals {
     last_updated_by = "terraform"   # Infrastructure management tool
   }
 }
+
+
+module "bq_tables" {
+  source = "../tables"
+
+  project_id = var.project_id
+  location   = var.location
+  datasets   = google_bigquery_dataset.datasets
+  gcloud_mysql_dataset_prefix = var.gcloud_mysql_dataset_prefix
+  common_labels = local.labels
+  lineage_labels_mysql = local.lineage_labels_mysql
+}
