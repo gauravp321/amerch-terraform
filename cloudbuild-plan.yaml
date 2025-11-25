@@ -406,13 +406,30 @@ steps:
       - '-c'
       - |
         cd bq_objects/terraform
-        echo "Checking plan for tables..."
-        terraform show -json tfplan-bq | jq '.resource_changes[] | select(.type == "google_bigquery_table") | .address' || echo "No tables found in plan"
+        echo "===== ENHANCED DIAGNOSTIC OUTPUT ====="
         echo ""
-        echo "Checking for precondition errors..."
-        terraform show tfplan-bq 2>&1 | grep -i "precondition\|error" || echo "No precondition errors found"
+        echo "1. Checking Terraform configuration (list all resource types)..."
+        terraform show -no-color | grep -E 'resource\s+"google_bigquery' | head -20 || echo "No BigQuery resources found in state"
+        echo ""
+        echo "2. Checking for table resources in configuration..."
+        find . -name '*.tf' -exec grep -l 'resource.*google_bigquery_table' {} \; || echo "No table resource blocks found"
+        echo ""
+        echo "3. Counting table resource blocks..."
+        find . -name '*.tf' -exec grep -c 'resource.*google_bigquery_table' {} + | awk '{s+=$1} END {print "Total table resource definitions: " s}'
+        echo ""
+        echo "4. Listing all google_bigquery_table resource blocks..."
+        grep -r 'resource "google_bigquery_table"' . --include="*.tf" | sed 's/:.*//g' | sort -u || echo "No table resources defined"
+        echo ""
+        echo "5. Checking dataset keys in current state..."
+        terraform state list | grep 'google_bigquery_dataset.datasets' || echo "No datasets in state"
+        echo ""
+        echo "6. Full plan output (last 100 lines for debugging)..."
+        terraform plan -var-file=${_TFVARS_FILE} 2>&1 | tail -100
     id: 'diagnose-plan-bq'
     waitFor: ['plan-bq']
+    env:
+      - 'TF_IN_AUTOMATION=true'
+      - 'GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TERRAFORM_SERVICE_ACCOUNT}'
     # Add after plan-bq step
 
 
