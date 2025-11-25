@@ -117,6 +117,9 @@ main() {
   fi
 
   # Attempt import
+
+  echo -e "terraform import ${RESOURCE_ADDRESS} ${RESOURCE_ID} 2>&1"
+
   IMPORT_OUTPUT=$(terraform import "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
   IMPORT_EXIT=$?
 
