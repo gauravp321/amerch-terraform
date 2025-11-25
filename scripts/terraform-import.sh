@@ -28,6 +28,7 @@ NC='\033[0m' # No Color
 # Parse arguments
 RESOURCE_ADDRESS=""
 RESOURCE_ID=""
+VAR_FILE=""
 SKIP_STATE_CHECK=false
 NON_CRITICAL=false
 
@@ -42,6 +43,7 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     *)
+      VAR_FILE="$3"
       if [ -z "$RESOURCE_ADDRESS" ]; then
         RESOURCE_ADDRESS="$1"
       elif [ -z "$RESOURCE_ID" ]; then
@@ -118,11 +120,9 @@ main() {
 
   # Attempt import
 
-  # echo -e "terraform import ${RESOURCE_ADDRESS} ${RESOURCE_ID} 2>&1"
+  # IMPORT_OUTPUT=$(terraform import "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
 
-  terraform import ${RESOURCE_ADDRESS} ${RESOURCE_ID} 2>&1
-
-  IMPORT_OUTPUT=$(terraform import "$RESOURCE_ADDRESS" "$RESOURCE_ID" 2>&1)
+  IMPORT_OUTPUT=$(terraform import -var-file=$VAR_FILE ${RESOURCE_ADDRESS} ${RESOURCE_ID} 2>&1)
   IMPORT_EXIT=$?
 
   echo -e "Import output : ${IMPORT_OUTPUT};  Import exit ${IMPORT_EXIT}"
