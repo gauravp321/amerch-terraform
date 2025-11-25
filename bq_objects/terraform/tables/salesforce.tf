@@ -877,6 +877,9 @@ resource "google_bigquery_table" "salesforce_account" {
   }
 
   labels = merge(local.labels, local.lineage_labels_salesforce)
+  depends_on = [
+    google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"]
+  ]
   lifecycle {
     ignore_changes = [
       schema,
@@ -1632,6 +1635,9 @@ resource "google_bigquery_table" "salesforce_contact" {
   }
 
   labels = merge(local.labels, local.lineage_labels_salesforce)
+  depends_on = [
+    google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"]
+  ]
   lifecycle {
     ignore_changes = [
       schema,
