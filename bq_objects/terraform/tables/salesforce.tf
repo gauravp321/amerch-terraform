@@ -114,7 +114,7 @@ resource "google_bigquery_table" "salesforce_retailer_c" {
 
   labels = merge(local.labels, local.lineage_labels_salesforce)
   depends_on = [
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -878,7 +878,7 @@ resource "google_bigquery_table" "salesforce_account" {
 
   labels = merge(local.labels, local.lineage_labels_salesforce)
   depends_on = [
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -1636,7 +1636,7 @@ resource "google_bigquery_table" "salesforce_contact" {
 
   labels = merge(local.labels, local.lineage_labels_salesforce)
   depends_on = [
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -1867,7 +1867,7 @@ resource "google_bigquery_table" "salesforce_program_c" {
   depends_on = [
     google_bigquery_table.salesforce_account,
     google_bigquery_table.salesforce_program_c,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -2101,7 +2101,7 @@ resource "google_bigquery_table" "salesforce_project_c" {
 
   depends_on = [
     google_bigquery_table.salesforce_contact,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -3370,7 +3370,7 @@ resource "google_bigquery_table" "salesforce_user" {
 
   depends_on = [
     google_bigquery_table.salesforce_contact,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -3609,7 +3609,7 @@ resource "google_bigquery_table" "salesforce_product_2" {
   depends_on = [
     google_bigquery_table.salesforce_account,
     google_bigquery_table.salesforce_contact,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -4161,7 +4161,7 @@ resource "google_bigquery_table" "salesforce_opportunity" {
   depends_on = [
     google_bigquery_table.salesforce_account,
     google_bigquery_table.salesforce_opportunity,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -4881,7 +4881,7 @@ resource "google_bigquery_table" "salesforce_quote" {
   depends_on = [
     google_bigquery_table.salesforce_account,
     google_bigquery_table.salesforce_opportunity,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -5175,7 +5175,7 @@ resource "google_bigquery_table" "salesforce_quote_line_item" {
 
   depends_on = [
     google_bigquery_table.salesforce_quote,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -5331,7 +5331,7 @@ resource "google_bigquery_table" "salesforce_quote_line_forecast_c" {
   depends_on = [
     google_bigquery_table.salesforce_opportunity,
     google_bigquery_table.salesforce_quote_line_item,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -5517,7 +5517,7 @@ resource "google_bigquery_table" "salesforce_forecast_c" {
 
   depends_on = [
     google_bigquery_table.salesforce_quote_line_item,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {
@@ -5808,7 +5808,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
   depends_on = [
     google_bigquery_table.salesforce_quote_line_item,
     google_bigquery_table.salesforce_quote_line_forecast_c,
-    google_bigquery_dataset.datasets[var.salesforce_dataset_prefix]
+    google_bigquery_dataset.datasets
   ]
 
   table_constraints {

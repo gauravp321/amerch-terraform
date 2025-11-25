@@ -416,7 +416,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_campaignelem
 
   labels = merge(local.labels, local.lineage_labels_mysql)
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_activity"]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -678,7 +678,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activities" 
 
   labels = merge(local.labels, local.lineage_labels_mysql)
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_activity"]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -873,7 +873,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activityexec
 
   labels = merge(local.labels, local.lineage_labels_mysql)
   depends_on = [
-    google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_activity"]
+    google_bigquery_dataset.datasets
   ]
   lifecycle {
     ignore_changes = [
