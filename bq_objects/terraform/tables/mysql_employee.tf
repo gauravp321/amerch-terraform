@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "gcloud_mysql_performance_employee_employees" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_employee"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_employee"].dataset_id
   table_id   = "employees"
 
   description = "This table stores comprehensive employee information. It includes personal details, contact information, employment status, and job-related attributes. The data facilitates human resources management, organizational reporting, and employee directory maintenance. It also supports analysis of workforce demographics and employee engagement."
@@ -394,7 +394,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_employee_employees" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -406,7 +406,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_employee_employees" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_employee"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_employee"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_employee' must exist before creating table 'gcloud_mysql_performance_employee_employees'. Ensure the dataset is defined in var.datasets."
     }
   }

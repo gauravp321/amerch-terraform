@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "gcloud_mysql_performance_item_items" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_item"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_item"].dataset_id
   table_id   = "items"
 
   description = "This table stores information about items in an inventory or product catalog. It tracks item identification, descriptions, and codes. The table also records creation and modification details. It includes data related to item status and any associated barcode information."
@@ -124,7 +124,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_item_items" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -136,7 +136,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_item_items" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_item"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_item"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_item' must exist before creating table 'gcloud_mysql_performance_item_items'. Ensure the dataset is defined in var.datasets."
     }
   }

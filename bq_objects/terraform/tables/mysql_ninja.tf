@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_templates" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "templates"
 
   description = "This table stores information about templates. It tracks the creation, modification, and status of templates. The table also records details such as the template type, associated AI model, and approval status. It provides a historical record of template revisions and retirements."
@@ -178,7 +178,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_templates" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -190,14 +190,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_templates" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_templates'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fields" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "fields"
 
   description = "This table stores information about fields used within a system. It tracks various attributes and configurations associated with each field. The data includes settings for validation, display, and data capture. This allows for the management and customization of fields within the application."
@@ -534,7 +534,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fields" {
     foreign_keys {
       name = "fk_fields_templates"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
         project_id = var.project_id
         table_id   = "templates"
       }
@@ -545,7 +545,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fields" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
@@ -554,14 +554,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fields" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_fields'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_responses" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "responses"
 
   description = "This table stores individual responses. It tracks the content of each response, along with creation and modification timestamps. The table also records who created and last modified each response. This data can be used to analyze response patterns and track changes over time."
@@ -634,7 +634,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_responses" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -646,14 +646,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_responses" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_responses'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldresponses" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "fieldresponses"
 
   description = "This table stores individual responses to specific fields within a form or survey. It tracks the association between responses and their corresponding fields. The table also captures metadata about the creation and modification of these responses. This allows for analysis of response data and tracking changes over time."
@@ -764,7 +764,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldresponses"
     foreign_keys {
       name = "fk_fieldresponses_fields"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
         project_id = var.project_id
         table_id   = "fields"
       }
@@ -776,7 +776,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldresponses"
     foreign_keys {
       name = "fk_fieldresponses_responses"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
         project_id = var.project_id
         table_id   = "responses"
       }
@@ -787,7 +787,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldresponses"
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
@@ -796,14 +796,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldresponses"
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_fieldresponses'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datapoints" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "datapoints"
 
   description = "This table stores individual data points collected from a monitoring system. It tracks numerical or textual values associated with specific metrics. The table facilitates analysis of performance trends and identification of anomalies. It also allows for correlating data points with their associated status and collection context."
@@ -882,7 +882,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datapoints" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -894,14 +894,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datapoints" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_datapoints'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollectionscans" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "datacollectionscans"
 
   description = "This table stores data related to the scanning of items. It records details about each scan event, including timestamps for creation and modification. The table facilitates tracking of scanned items and their associated quantities. It also captures information related to responses and data points associated with each scan."
@@ -1006,7 +1006,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     foreign_keys {
       name = "fk_datacollectionscans_datapoints"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
         project_id = var.project_id
         table_id   = "datapoints"
       }
@@ -1017,7 +1017,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -1029,14 +1029,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_datacollectionscans'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_collectionrequests" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "collectionrequests"
 
   description = "This table stores information about collection requests. It tracks the status and activities associated with each request. The table also records creation and modification details, including who created and modified the request and when. This data can be used to analyze collection request workflows and performance."
@@ -1182,7 +1182,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_collectionreque
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
@@ -1191,14 +1191,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_collectionreque
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_collectionrequests'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "datacollections"
 
   description = "This table stores data collection events. It tracks the lifecycle of data as it is gathered from various sources. The table records details about the origin, status, and timing of each data collection. It also includes identifiers for related entities, such as employees, stores, and items."
@@ -1422,7 +1422,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     foreign_keys {
       name = "fk_datacollections_collectionrequests"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
         project_id = var.project_id
         table_id   = "collectionrequests"
       }
@@ -1434,7 +1434,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     foreign_keys {
       name = "fk_datacollections_templates"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
         project_id = var.project_id
         table_id   = "templates"
       }
@@ -1445,7 +1445,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
@@ -1454,14 +1454,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_datacollections'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_aimmscandetails" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "aimmscandetails"
 
   description = "This table stores details related to image scan data. It records specific responses collected during the scans. The table also tracks the association of these responses with planograms and fixtures. This information is useful for analyzing product placement and performance within a retail environment."
@@ -1577,7 +1577,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_aimmscandetails
     foreign_keys {
       name = "fk_aimmscandetails_datapoints"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
         project_id = var.project_id
         table_id   = "datapoints"
       }
@@ -1600,7 +1600,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_aimmscandetails
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -1612,14 +1612,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_aimmscandetails
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_aimmscandetails'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_tags" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "tags"
 
   description = "This table stores information about tags used for categorization or labeling. It tracks creation and modification details for each tag. The table also captures relationships between tags. It includes information on who is responsible for each tag."
@@ -1716,7 +1716,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_tags" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -1728,14 +1728,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_tags" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_tags'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldtags" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
   table_id   = "fieldtags"
 
   description = "This table stores the relationships between fields and tags. It tracks when these relationships were created and modified. The table also records who created and modified these associations. This data can be used to understand how fields are categorized and organized through tags."
@@ -1823,7 +1823,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldtags" {
     foreign_keys {
       name = "fk_fieldtags_fields"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
         project_id = var.project_id
         table_id   = "fields"
       }
@@ -1835,7 +1835,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldtags" {
     foreign_keys {
       name = "fk_fieldtags_tags"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"].dataset_id
         project_id = var.project_id
         table_id   = "tags"
       }
@@ -1846,7 +1846,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldtags" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
@@ -1855,7 +1855,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldtags" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_fieldtags'. Ensure the dataset is defined in var.datasets."
     }
   }

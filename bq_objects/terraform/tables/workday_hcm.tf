@@ -598,7 +598,7 @@ resource "google_bigquery_table" "workday_hcm_worker" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
     var.datasets
   ]
@@ -845,7 +845,7 @@ resource "google_bigquery_table" "workday_hcm_organization" {
     # }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
     var.datasets
   ]
@@ -973,7 +973,7 @@ resource "google_bigquery_table" "workday_hcm_location" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
     var.datasets
   ]
@@ -1167,7 +1167,7 @@ resource "google_bigquery_table" "workday_hcm_job_profile" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
     var.datasets
   ]
@@ -1419,7 +1419,7 @@ resource "google_bigquery_table" "workday_hcm_person_name" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
     var.datasets
   ]
@@ -1587,7 +1587,7 @@ resource "google_bigquery_table" "workday_hcm_address" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
     var.datasets
   ]
@@ -2037,7 +2037,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
     var.datasets
   ]
@@ -2365,7 +2365,7 @@ resource "google_bigquery_table" "workday_hcm_worker_leave_status" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
     var.datasets
   ]
@@ -2472,7 +2472,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_manager" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   lifecycle {
     ignore_changes = [
       schema,
@@ -2619,7 +2619,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_organization" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   lifecycle {
     ignore_changes = [
       schema,
@@ -2722,7 +2722,7 @@ resource "google_bigquery_table" "workday_hcm_organization_hierarchy_detail" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   lifecycle {
     ignore_changes = [
       schema,
@@ -2824,7 +2824,7 @@ resource "google_bigquery_table" "workday_hcm_supervisory_organization_location"
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   lifecycle {
     ignore_changes = [
       schema,
@@ -2920,7 +2920,7 @@ resource "google_bigquery_table" "workday_hcm_address_line" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   lifecycle {
     ignore_changes = [
       schema,
@@ -3016,7 +3016,7 @@ resource "google_bigquery_table" "workday_hcm_address_subregion" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   lifecycle {
     ignore_changes = [
       schema,
@@ -3105,7 +3105,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_tenanted_reference
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   lifecycle {
     ignore_changes = [
       schema,
@@ -3194,7 +3194,7 @@ resource "google_bigquery_table" "workday_hcm_address_usage_type" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   lifecycle {
     ignore_changes = [
       schema,
@@ -3283,7 +3283,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_reference" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_workday_hcm)
+  labels = merge(var.labels, var.lineage_labels_workday_hcm)
   lifecycle {
     ignore_changes = [
       schema,

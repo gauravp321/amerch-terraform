@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "gcloud_mysql_performance_activity_campaignelements" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_activity"].dataset_id
   table_id   = "campaignelements"
 
   description = "This table stores information about campaign elements, which are individual components or activities within a larger marketing campaign. It tracks various attributes of these elements, including scheduling details, participant information, and billing status. The table also captures relationships between campaign elements, such as dependencies or follow-ups. This data allows for detailed analysis of campaign structure and execution."
@@ -414,7 +414,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_campaignelem
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -426,14 +426,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_campaignelem
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_activity"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_activity' must exist before creating table 'gcloud_mysql_performance_activity_campaignelements'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_activity_activities" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_activity"].dataset_id
   table_id   = "activities"
 
   description = "This table stores information about scheduled activities. It tracks key details such as scheduling, completion status, and associated revenue. The table also captures information about employees involved in the activity, as well as relevant dates and times. This data supports analysis of activity performance and resource allocation."
@@ -665,7 +665,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activities" 
     foreign_keys {
       name = "fk_activities_campaignelements"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_activity"].dataset_id
         project_id = var.project_id
         table_id   = "campaignelements"
       }
@@ -676,7 +676,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activities" 
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -688,14 +688,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activities" 
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_activity"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_activity' must exist before creating table 'gcloud_mysql_performance_activity_activities'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_activity_activityexecutions" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_activity"].dataset_id
   table_id   = "activityexecutions"
 
   description = "This table stores data about the execution of activities. It tracks the status, timing, and costs associated with each activity execution. The table also records information about the employees involved and any interruptions during the activity. This data can be used to analyze activity performance and resource allocation."
@@ -860,7 +860,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activityexec
     foreign_keys {
       name = "fk_activityexecutions_activities"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_activity"].dataset_id
         project_id = var.project_id
         table_id   = "activities"
       }
@@ -871,7 +871,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activityexec
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -883,7 +883,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activityexec
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_activity"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_activity' must exist before creating table 'gcloud_mysql_performance_activity_activityexecutions'. Ensure the dataset is defined in var.datasets."
     }
   }
