@@ -112,7 +112,7 @@ resource "google_bigquery_table" "salesforce_retailer_c" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   depends_on = [
     var.datasets
   ]
@@ -876,7 +876,7 @@ resource "google_bigquery_table" "salesforce_account" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   depends_on = [
     var.datasets
   ]
@@ -1634,7 +1634,7 @@ resource "google_bigquery_table" "salesforce_contact" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   depends_on = [
     var.datasets
   ]
@@ -1890,7 +1890,7 @@ resource "google_bigquery_table" "salesforce_program_c" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
@@ -2124,7 +2124,7 @@ resource "google_bigquery_table" "salesforce_project_c" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
@@ -3405,7 +3405,7 @@ resource "google_bigquery_table" "salesforce_user" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
@@ -3620,7 +3620,7 @@ resource "google_bigquery_table" "salesforce_product_2" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
@@ -4196,7 +4196,7 @@ resource "google_bigquery_table" "salesforce_opportunity" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
@@ -4928,7 +4928,7 @@ resource "google_bigquery_table" "salesforce_quote" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
@@ -5210,7 +5210,7 @@ resource "google_bigquery_table" "salesforce_quote_line_item" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
@@ -5354,7 +5354,7 @@ resource "google_bigquery_table" "salesforce_quote_line_forecast_c" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
@@ -5540,7 +5540,7 @@ resource "google_bigquery_table" "salesforce_forecast_c" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
@@ -5879,7 +5879,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_salesforce)
+  labels = merge(var.labels, var.lineage_labels_salesforce)
   lifecycle {
     ignore_changes = [
       schema,
