@@ -111,6 +111,6 @@ module "bq_tables" {
   salesforce_dataset_prefix   = var.salesforce_dataset_prefix
   workday_hcm_dataset_prefix  = var.workday_hcm_dataset_prefix
 
-  labels               = local.labels
+  labels = local.labels
   #lineage_labels_mysql = local.lineage_labels_mysql
 }
