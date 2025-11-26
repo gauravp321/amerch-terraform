@@ -27,8 +27,8 @@ locals {
       schema_version                                = "1-0-0"
       schema_version_date                           = "2025-11-19"
       # Enhanced labels for cost tracking and resource organization
-      data_classification = "internal"          # For security/compliance classification
-      backup_required     = "false"             # BigQuery has built-in replication, no additional backup needed
+      data_classification = "internal"         # For security/compliance classification
+      backup_required     = "false"            # BigQuery has built-in replication, no additional backup needed
       owner               = "data-engineering" # For ownership tracking and resource management
     }
   )
@@ -73,9 +73,9 @@ locals {
   # These labels enable automated data lineage tracking without manual documentation.
   lineage_labels_mysql = {
     data_source     = "fivetran"                 # Data ingestion tool
-    source_system   = "gcloud_mysql_performance"  # Source database system
-    ingestion_type  = "replication"               # CDC replication via Fivetran
-    last_updated_by = "terraform"                 # Infrastructure management tool
+    source_system   = "gcloud_mysql_performance" # Source database system
+    ingestion_type  = "replication"              # CDC replication via Fivetran
+    last_updated_by = "terraform"                # Infrastructure management tool
   }
 
   lineage_labels_salesforce = {
@@ -87,16 +87,16 @@ locals {
 
   lineage_labels_workday_hcm = {
     data_source     = "fivetran"    # Data ingestion tool
-    source_system   = "workday_hcm"  # Source HR system
+    source_system   = "workday_hcm" # Source HR system
     ingestion_type  = "replication" # CDC replication via Fivetran
-    last_updated_by = "terraform"    # Infrastructure management tool
+    last_updated_by = "terraform"   # Infrastructure management tool
   }
 
   lineage_labels_pos_files = {
-    data_source     = "gcs"          # Data source (GCS bucket)
-    source_system   = "pos_files"    # Source system identifier
-    ingestion_type  = "file_upload"  # Manual file upload process
-    last_updated_by = "terraform"    # Infrastructure management tool
+    data_source     = "gcs"         # Data source (GCS bucket)
+    source_system   = "pos_files"   # Source system identifier
+    ingestion_type  = "file_upload" # Manual file upload process
+    last_updated_by = "terraform"   # Infrastructure management tool
   }
 }
 
@@ -111,8 +111,8 @@ module "bq_tables" {
   salesforce_dataset_prefix   = var.salesforce_dataset_prefix
   workday_hcm_dataset_prefix  = var.workday_hcm_dataset_prefix
 
-  labels                    = local.labels
-  lineage_labels_mysql      = local.lineage_labels_mysql
+  labels                     = local.labels
+  lineage_labels_mysql       = local.lineage_labels_mysql
   lineage_labels_salesforce  = local.lineage_labels_salesforce
   lineage_labels_workday_hcm = local.lineage_labels_workday_hcm
 
