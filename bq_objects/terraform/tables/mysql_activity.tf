@@ -426,7 +426,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_campaignelem
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_activity")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_activity' must exist before creating table 'gcloud_mysql_performance_activity_campaignelements'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -688,7 +688,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activities" 
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_activity")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_activity' must exist before creating table 'gcloud_mysql_performance_activity_activities'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -883,7 +883,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activityexec
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_activity")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_activity"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_activity' must exist before creating table 'gcloud_mysql_performance_activity_activityexecutions'. Ensure the dataset is defined in var.datasets."
     }
   }

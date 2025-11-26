@@ -539,7 +539,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_programs" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_program")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_program"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_program' must exist before creating table 'gcloud_mysql_performance_program_programs'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -850,7 +850,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_projects" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_program")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_program"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_program' must exist before creating table 'gcloud_mysql_performance_program_projects'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1251,7 +1251,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_laborbyweek" 
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_program")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_program"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_program' must exist before creating table 'gcloud_mysql_performance_program_laborbyweek'. Ensure the dataset is defined in var.datasets."
     }
   }

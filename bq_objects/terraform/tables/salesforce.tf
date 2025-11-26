@@ -124,7 +124,7 @@ resource "google_bigquery_table" "salesforce_retailer_c" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_retailer_c'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -888,7 +888,7 @@ resource "google_bigquery_table" "salesforce_account" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_account'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1646,7 +1646,7 @@ resource "google_bigquery_table" "salesforce_contact" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_contact'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1899,7 +1899,7 @@ resource "google_bigquery_table" "salesforce_program_c" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_program_c'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -2133,7 +2133,7 @@ resource "google_bigquery_table" "salesforce_project_c" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_project_c'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -3414,7 +3414,7 @@ resource "google_bigquery_table" "salesforce_user" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_user'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -3629,7 +3629,7 @@ resource "google_bigquery_table" "salesforce_product_2" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_product_2'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -4205,7 +4205,7 @@ resource "google_bigquery_table" "salesforce_opportunity" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_opportunity'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -4937,7 +4937,7 @@ resource "google_bigquery_table" "salesforce_quote" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_quote'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -5219,7 +5219,7 @@ resource "google_bigquery_table" "salesforce_quote_line_item" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_quote_line_item'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -5363,7 +5363,7 @@ resource "google_bigquery_table" "salesforce_quote_line_forecast_c" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_quote_line_forecast_c'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -5549,7 +5549,7 @@ resource "google_bigquery_table" "salesforce_forecast_c" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_forecast_c'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -5888,7 +5888,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.salesforce_dataset_prefix)
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_forecast_line_item_c'. Ensure the dataset is defined in var.datasets."
     }
   }

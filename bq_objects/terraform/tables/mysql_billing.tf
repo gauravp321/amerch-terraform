@@ -245,7 +245,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_billing_clients" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_billing")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_billing"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_billing' must exist before creating table 'gcloud_mysql_performance_billing_clients'. Ensure the dataset is defined in var.datasets."
     }
   }
