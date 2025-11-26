@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "gcloud_mysql_performance_billing_clients" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_billing"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_billing"].dataset_id
   table_id   = "clients"
 
   description = "This table stores comprehensive information about clients. It includes contact details, billing information, and addresses. The table also tracks client creation and modification dates. It provides key data for managing client relationships and financial transactions."
@@ -245,7 +245,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_billing_clients" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_billing"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_billing"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_billing' must exist before creating table 'gcloud_mysql_performance_billing_clients'. Ensure the dataset is defined in var.datasets."
     }
   }

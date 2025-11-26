@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "gcloud_mysql_performance_alignment_alignments_v2" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_alignment"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_alignment"].dataset_id
   table_id   = "alignments_v2"
 
   description = "This table stores information about different alignments within an organization. It tracks the hierarchical structure of these alignments. The table records creation and modification timestamps. It also stores codes and descriptions associated with each alignment."
