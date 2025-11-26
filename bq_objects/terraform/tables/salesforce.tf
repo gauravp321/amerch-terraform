@@ -1636,6 +1636,7 @@ resource "google_bigquery_table" "salesforce_contact" {
 
   labels = merge(var.labels, var.lineage_labels_salesforce)
   depends_on = [
+    google_bigquery_table.salesforce_account,
     var.datasets
   ]
   lifecycle {
@@ -3368,11 +3369,6 @@ resource "google_bigquery_table" "salesforce_user" {
     "id",
   ]
 
-  depends_on = [
-    google_bigquery_table.salesforce_contact,
-    var.datasets
-  ]
-
   table_constraints {
     primary_key {
       columns = [
@@ -3406,6 +3402,11 @@ resource "google_bigquery_table" "salesforce_user" {
   }
 
   labels = merge(var.labels, var.lineage_labels_salesforce)
+  depends_on = [
+    google_bigquery_table.salesforce_account,
+    google_bigquery_table.salesforce_contact,
+    var.datasets
+  ]
   lifecycle {
     ignore_changes = [
       schema,
@@ -4158,12 +4159,6 @@ resource "google_bigquery_table" "salesforce_opportunity" {
     "id",
   ]
 
-  depends_on = [
-    google_bigquery_table.salesforce_account,
-    google_bigquery_table.salesforce_opportunity,
-    var.datasets
-  ]
-
   table_constraints {
     primary_key {
       columns = [
@@ -4197,6 +4192,11 @@ resource "google_bigquery_table" "salesforce_opportunity" {
   }
 
   labels = merge(var.labels, var.lineage_labels_salesforce)
+  depends_on = [
+    google_bigquery_table.salesforce_account,
+    google_bigquery_table.salesforce_contact,
+    var.datasets
+  ]
   lifecycle {
     ignore_changes = [
       schema,

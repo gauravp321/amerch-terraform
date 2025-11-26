@@ -873,6 +873,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activityexec
 
   labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
+    google_bigquery_table.gcloud_mysql_performance_activity_activities,
     var.datasets
   ]
   lifecycle {
