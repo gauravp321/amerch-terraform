@@ -190,7 +190,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_templates" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_templates'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -554,7 +554,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fields" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_fields'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -646,7 +646,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_responses" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_responses'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -796,7 +796,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldresponses"
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_fieldresponses'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -894,7 +894,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datapoints" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_datapoints'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1029,7 +1029,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_datacollectionscans'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1191,7 +1191,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_collectionreque
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_collectionrequests'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1454,7 +1454,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_datacollections'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1612,7 +1612,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_aimmscandetails
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_aimmscandetails'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1728,7 +1728,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_tags" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_tags'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1855,7 +1855,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldtags" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_ninja")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_ninja"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_ninja' must exist before creating table 'gcloud_mysql_performance_ninja_fieldtags'. Ensure the dataset is defined in var.datasets."
     }
   }

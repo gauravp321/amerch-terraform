@@ -610,7 +610,7 @@ resource "google_bigquery_table" "workday_hcm_worker" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -857,7 +857,7 @@ resource "google_bigquery_table" "workday_hcm_organization" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_organization'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -985,7 +985,7 @@ resource "google_bigquery_table" "workday_hcm_location" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_location'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1179,7 +1179,7 @@ resource "google_bigquery_table" "workday_hcm_job_profile" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_job_profile'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1431,7 +1431,7 @@ resource "google_bigquery_table" "workday_hcm_person_name" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_person_name'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -1599,7 +1599,7 @@ resource "google_bigquery_table" "workday_hcm_address" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -2049,7 +2049,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker_position'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -2377,7 +2377,7 @@ resource "google_bigquery_table" "workday_hcm_worker_leave_status" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker_leave_status'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -2481,7 +2481,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_manager" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker_position_manager'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -2628,7 +2628,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position_organization" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_worker_position_organization'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -2731,7 +2731,7 @@ resource "google_bigquery_table" "workday_hcm_organization_hierarchy_detail" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_organization_hierarchy_detail'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -2833,7 +2833,7 @@ resource "google_bigquery_table" "workday_hcm_supervisory_organization_location"
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_supervisory_organization_location'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -2929,7 +2929,7 @@ resource "google_bigquery_table" "workday_hcm_address_line" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_line'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -3025,7 +3025,7 @@ resource "google_bigquery_table" "workday_hcm_address_subregion" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_subregion'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -3114,7 +3114,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_tenanted_reference
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_use_for_tenanted_reference'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -3203,7 +3203,7 @@ resource "google_bigquery_table" "workday_hcm_address_usage_type" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_usage_type'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -3292,7 +3292,7 @@ resource "google_bigquery_table" "workday_hcm_address_use_for_reference" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.workday_hcm_dataset_prefix)
+      condition     = try(var.datasets[var.workday_hcm_dataset_prefix], null) != null
       error_message = "Dataset '${var.workday_hcm_dataset_prefix}' must exist before creating table 'workday_hcm_address_use_for_reference'. Ensure the dataset is defined in var.datasets."
     }
   }

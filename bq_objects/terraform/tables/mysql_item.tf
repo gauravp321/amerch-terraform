@@ -136,7 +136,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_item_items" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_item")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_item"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_item' must exist before creating table 'gcloud_mysql_performance_item_items'. Ensure the dataset is defined in var.datasets."
     }
   }

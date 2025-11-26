@@ -111,8 +111,10 @@ module "bq_tables" {
   salesforce_dataset_prefix   = var.salesforce_dataset_prefix
   workday_hcm_dataset_prefix  = var.workday_hcm_dataset_prefix
 
-  labels     = local.labels
-  depends_on = [google_bigquery_dataset.datasets]
+  labels                  = local.labels
+  lineage_labels_mysql    = local.lineage_labels_mysql
+  lineage_labels_salesforce = local.lineage_labels_salesforce
+  lineage_labels_workday_hcm = local.lineage_labels_workday_hcm
 
-  #lineage_labels_mysql = local.lineage_labels_mysql
+  depends_on = [google_bigquery_dataset.datasets]
 }

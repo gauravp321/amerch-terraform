@@ -130,7 +130,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_chains" {
       clustering,
     ]
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_coreapp")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_coreapp' must exist before creating table 'chains'. Ensure the dataset is defined in var.datasets with is_mysql=true and key='coreapp'."
     }
   }
@@ -475,7 +475,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_stores" {
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_coreapp")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_coreapp' must exist before creating table 'gcloud_mysql_performance_coreapp_stores'. Ensure the dataset is defined in var.datasets."
     }
   }
@@ -625,7 +625,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_store_alignme
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_coreapp")
+      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_coreapp' must exist before creating table 'gcloud_mysql_performance_coreapp_store_alignment'. Ensure the dataset is defined in var.datasets."
     }
   }

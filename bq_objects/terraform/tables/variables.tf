@@ -89,3 +89,21 @@ variable "labels" {
   }
 }
 
+variable "lineage_labels_mysql" {
+  description = "Data lineage labels for MySQL Performance tables. Passed from parent module."
+  type        = map(string)
+  default     = {}
+}
+
+variable "lineage_labels_salesforce" {
+  description = "Data lineage labels for Salesforce tables. Passed from parent module."
+  type        = map(string)
+  default     = {}
+}
+
+variable "lineage_labels_workday_hcm" {
+  description = "Data lineage labels for Workday HCM tables. Passed from parent module."
+  type        = map(string)
+  default     = {}
+}
+

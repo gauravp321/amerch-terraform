@@ -118,7 +118,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_alignment_alignments_
     ]
 
     precondition {
-      condition     = contains(keys(var.datasets), "${var.gcloud_mysql_dataset_prefix}_alignment")
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_alignment"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_alignment' must exist before creating table 'gcloud_mysql_performance_alignment_alignments_v2'. Ensure the dataset is defined in var.datasets."
     }
   }
