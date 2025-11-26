@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_chains" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_coreapp"].dataset_id
   table_id   = "chains"
 
   description = "This table stores information about different chains. It tracks creation and modification details for each chain. The table also includes data related to the chain's logo, syndication status, and demographic tab settings. It captures the current status of each chain."
@@ -130,14 +130,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_chains" {
       clustering,
     ]
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_coreapp"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_coreapp' must exist before creating table 'chains'. Ensure the dataset is defined in var.datasets with is_mysql=true and key='coreapp'."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_stores" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_coreapp"].dataset_id
   table_id   = "stores"
 
   description = "This table stores information about physical store locations. It includes details regarding store addresses, geographic coordinates, and various identifiers. The table also tracks store attributes, such as square footage and store type. It maintains information about store management and operational status."
@@ -475,14 +475,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_stores" {
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_coreapp"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_coreapp' must exist before creating table 'gcloud_mysql_performance_coreapp_stores'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_store_alignment" {
-  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"].dataset_id
+  dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_coreapp"].dataset_id
   table_id   = "store_alignment"
 
   description = "This table tracks the alignment of employees to specific stores. It defines the hierarchical relationships between different employee roles and store locations. The table captures the effective dates for these alignments. It facilitates analysis of employee coverage and responsibilities across the organization."
@@ -605,7 +605,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_store_alignme
     foreign_keys {
       name = "fk_store_alignment_stores"
       referenced_table {
-        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"].dataset_id
+        dataset_id = var.datasets["${var.gcloud_mysql_dataset_prefix}_coreapp"].dataset_id
         project_id = var.project_id
         table_id   = "stores"
       }
@@ -625,7 +625,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_coreapp_store_alignme
     ]
 
     precondition {
-      condition     = try(var.datasets[var.gcloud_mysql_dataset_prefix + "_coreapp"], null) != null
+      condition     = try(var.datasets["${var.gcloud_mysql_dataset_prefix}_coreapp"], null) != null
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_coreapp' must exist before creating table 'gcloud_mysql_performance_coreapp_store_alignment'. Ensure the dataset is defined in var.datasets."
     }
   }
