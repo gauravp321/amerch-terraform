@@ -414,7 +414,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_campaignelem
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -676,7 +676,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activities" 
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -871,7 +871,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_activity_activityexec
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]

@@ -178,7 +178,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_templates" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -545,7 +545,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fields" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
@@ -634,7 +634,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_responses" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -787,7 +787,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldresponses"
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
@@ -882,7 +882,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datapoints" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -1017,7 +1017,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -1182,7 +1182,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_collectionreque
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
@@ -1445,7 +1445,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_datacollections
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
@@ -1600,7 +1600,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_aimmscandetails
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -1716,7 +1716,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_tags" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   depends_on = [
     var.datasets
   ]
@@ -1846,7 +1846,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_ninja_fieldtags" {
     }
   }
 
-  labels = merge(local.labels, local.lineage_labels_mysql)
+  labels = merge(var.labels, var.lineage_labels_mysql)
   lifecycle {
     ignore_changes = [
       schema,
