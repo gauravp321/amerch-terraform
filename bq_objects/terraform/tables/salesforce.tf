@@ -3369,11 +3369,6 @@ resource "google_bigquery_table" "salesforce_user" {
     "id",
   ]
 
-  depends_on = [
-    google_bigquery_table.salesforce_contact,
-    var.datasets
-  ]
-
   table_constraints {
     primary_key {
       columns = [
@@ -4162,12 +4157,6 @@ resource "google_bigquery_table" "salesforce_opportunity" {
   clustering = [
     "account_id",
     "id",
-  ]
-
-  depends_on = [
-    google_bigquery_table.salesforce_account,
-    google_bigquery_table.salesforce_opportunity,
-    var.datasets
   ]
 
   table_constraints {
