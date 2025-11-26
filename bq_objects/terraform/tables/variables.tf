@@ -60,43 +60,11 @@ variable "workday_hcm_dataset_prefix" {
 }
 
 variable "datasets" {
-  description = "Map of dataset keys and their configurations. For MySQL datasets, use suffixes (e.g., 'coreapp') which will be prefixed with gcloud_mysql_dataset_prefix. For Salesforce and Workday HCM, the prefix is used directly (no suffix). Must be explicitly set in terraform.tfvars (no default to prevent environment coupling)."
-  type = map(object({
-    friendly_name  = string
-    description    = string
-    location       = string
-    labels         = map(string)
-    is_mysql       = bool
-    is_salesforce  = bool
-    is_workday_hcm = bool
-  }))
-  # No default - must be explicitly set in terraform.tfvars to prevent accidental cross-environment deployment
-  # See terraform.tfvars.example for the required dataset configuration
-
-  validation {
-    condition = alltrue([
-      for key, config in var.datasets : (
-        # Dataset key validation: 1-1024 chars, start with letter or underscore, contain only letters, numbers, underscores
-        can(regex("^[a-zA-Z_][a-zA-Z0-9_]{0,1023}$", key)) &&
-        length(key) >= 1 &&
-        length(key) <= 1024 &&
-        # Location must be non-empty (GCP will validate the actual location value)
-        length(config.location) > 0 &&
-        # Validate labels within dataset config (handle empty maps)
-        length(config.labels) == 0 || alltrue([
-          for label_key, label_value in config.labels : (
-            can(regex("^[a-z][a-z0-9_-]{0,62}$", label_key)) &&
-            length(label_key) >= 1 &&
-            length(label_key) <= 63 &&
-            can(regex("^[a-z0-9_-]*$", label_value)) &&
-            length(label_value) >= 0 &&
-            length(label_value) <= 63
-          )
-        ])
-      )
-    ])
-    error_message = "Dataset keys must be 1-1024 characters, start with letter or underscore, and contain only letters, numbers, and underscores. Location must be non-empty. Labels must follow GCP label constraints (keys: 1-63 chars starting with lowercase letter; values: 0-63 chars, lowercase alphanumeric with hyphens/underscores only, no dots)."
-  }
+  description = "Map of BigQuery dataset resources keyed by dataset ID. This is passed from the parent module as google_bigquery_dataset.datasets. For MySQL datasets, keys are constructed as {prefix}_{suffix} (e.g., 'raw_fivetran_gcloud_performance_coreapp'). For Salesforce and Workday HCM, keys are the prefix directly (e.g., 'raw_fivetran_salesforce')."
+  type        = map(any)
+  # This receives google_bigquery_dataset.datasets from the parent module, which is a map of dataset resources
+  # Type is map(any) because resource types are complex and we only need to access .dataset_id attribute
+  # Validation is handled in the parent module, so no validation needed here
 }
 
 variable "labels" {

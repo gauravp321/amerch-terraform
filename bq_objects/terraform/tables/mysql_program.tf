@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "gcloud_mysql_performance_program_programs" {
-  dataset_id = google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
+  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
   table_id   = "programs"
 
   description = "This table stores information about various programs. It includes details on program costs, revenue, and labor hours. The table also tracks program status, dates, and associated personnel. This data facilitates analysis of program performance and resource allocation."
@@ -529,7 +529,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_programs" {
 
   labels = merge(local.labels, local.lineage_labels_mysql)
   depends_on = [
-    google_bigquery_dataset.datasets
+    var.datasets
   ]
   lifecycle {
     ignore_changes = [
@@ -539,14 +539,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_programs" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), var.gcloud_mysql_dataset_prefix + "_program")
+      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_program")
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_program' must exist before creating table 'gcloud_mysql_performance_program_programs'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_program_projects" {
-  dataset_id = google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
+  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
   table_id   = "projects"
 
   description = "This table stores comprehensive details about projects. It includes information on project assignments, timelines, and financial aspects. The table facilitates tracking project status, revenue, and associated resources. It also captures key relationships between projects, clients, and internal teams."
@@ -818,7 +818,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_projects" {
 
   depends_on = [
     google_bigquery_table.gcloud_mysql_performance_program_programs,
-    google_bigquery_dataset.datasets
+    var.datasets
   ]
 
   table_constraints {
@@ -830,7 +830,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_projects" {
     foreign_keys {
       name = "fk_projects_programs"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
+        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
         project_id = var.project_id
         table_id   = "programs"
       }
@@ -850,14 +850,14 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_projects" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), var.gcloud_mysql_dataset_prefix + "_program")
+      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_program")
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_program' must exist before creating table 'gcloud_mysql_performance_program_projects'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "gcloud_mysql_performance_program_laborbyweek" {
-  dataset_id = google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
+  dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
   table_id   = "laborbyweek"
 
   description = "This table stores labor data aggregated on a weekly basis. It includes financial metrics related to project activities. The table tracks information about elements created, released, and pending. It also captures details about revenue, costs, and hours associated with labor."
@@ -1219,7 +1219,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_laborbyweek" 
 
   depends_on = [
     google_bigquery_table.gcloud_mysql_performance_program_projects,
-    google_bigquery_dataset.datasets
+    var.datasets
   ]
 
   table_constraints {
@@ -1231,7 +1231,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_laborbyweek" 
     foreign_keys {
       name = "fk_laborbyweek_projects"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
+        dataset_id = var.datasets[var.gcloud_mysql_dataset_prefix + "_program"].dataset_id
         project_id = var.project_id
         table_id   = "projects"
       }
@@ -1251,7 +1251,7 @@ resource "google_bigquery_table" "gcloud_mysql_performance_program_laborbyweek" 
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), var.gcloud_mysql_dataset_prefix + "_program")
+      condition     = contains(keys(var.datasets), var.gcloud_mysql_dataset_prefix + "_program")
       error_message = "Dataset '${var.gcloud_mysql_dataset_prefix}_program' must exist before creating table 'gcloud_mysql_performance_program_laborbyweek'. Ensure the dataset is defined in var.datasets."
     }
   }
