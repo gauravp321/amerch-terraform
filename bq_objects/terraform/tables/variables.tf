@@ -88,3 +88,4 @@ variable "labels" {
     error_message = "Label keys must be 1-63 characters, start with lowercase letter, and contain only lowercase letters, numbers, hyphens, and underscores. Label values must be 0-63 characters and contain only lowercase letters, numbers, hyphens, and underscores (no dots allowed)."
   }
 }
+
