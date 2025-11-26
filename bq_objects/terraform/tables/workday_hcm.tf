@@ -2624,10 +2624,6 @@ resource "google_bigquery_table" "workday_hcm_worker_position_organization" {
   }
 
   labels = merge(var.labels, var.lineage_labels_workday_hcm)
-  depends_on = [
-    google_bigquery_table.workday_hcm_worker,
-    var.datasets
-  ]
   lifecycle {
     ignore_changes = [
       schema,
