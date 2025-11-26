@@ -106,4 +106,3 @@ variable "lineage_labels_workday_hcm" {
   type        = map(string)
   default     = {}
 }
-
