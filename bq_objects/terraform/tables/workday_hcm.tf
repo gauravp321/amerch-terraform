@@ -1421,6 +1421,7 @@ resource "google_bigquery_table" "workday_hcm_person_name" {
 
   labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
+    google_bigquery_table.workday_hcm_worker,
     var.datasets
   ]
   lifecycle {
@@ -1589,6 +1590,7 @@ resource "google_bigquery_table" "workday_hcm_address" {
 
   labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
+    google_bigquery_table.workday_hcm_worker,
     var.datasets
   ]
   lifecycle {
@@ -2039,6 +2041,7 @@ resource "google_bigquery_table" "workday_hcm_worker_position" {
 
   labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
+    google_bigquery_table.workday_hcm_worker,
     var.datasets
   ]
   lifecycle {
@@ -2367,6 +2370,7 @@ resource "google_bigquery_table" "workday_hcm_worker_leave_status" {
 
   labels = merge(var.labels, var.lineage_labels_workday_hcm)
   depends_on = [
+    google_bigquery_table.workday_hcm_worker,
     var.datasets
   ]
   lifecycle {
