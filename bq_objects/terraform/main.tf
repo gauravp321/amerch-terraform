@@ -99,3 +99,22 @@ locals {
     last_updated_by = "terraform"   # Infrastructure management tool
   }
 }
+
+
+module "bq_tables" {
+  source = "./tables"
+
+  project_id                  = var.project_id
+  region                      = var.region
+  datasets                    = google_bigquery_dataset.datasets
+  gcloud_mysql_dataset_prefix = var.gcloud_mysql_dataset_prefix
+  salesforce_dataset_prefix   = var.salesforce_dataset_prefix
+  workday_hcm_dataset_prefix  = var.workday_hcm_dataset_prefix
+
+  labels                     = local.labels
+  lineage_labels_mysql       = local.lineage_labels_mysql
+  lineage_labels_salesforce  = local.lineage_labels_salesforce
+  lineage_labels_workday_hcm = local.lineage_labels_workday_hcm
+
+  depends_on = [google_bigquery_dataset.datasets]
+}

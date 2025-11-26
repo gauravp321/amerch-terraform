@@ -3,7 +3,7 @@
 # Split from tables.tf for better maintainability
 
 resource "google_bigquery_table" "salesforce_retailer_c" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "retailer_c"
 
   description = "This table stores information about retailers and references the owning user."
@@ -113,6 +113,9 @@ resource "google_bigquery_table" "salesforce_retailer_c" {
   }
 
   labels = merge(local.labels, local.lineage_labels_salesforce)
+  depends_on = [
+    var.datasets
+  ]
   lifecycle {
     ignore_changes = [
       schema,
@@ -121,14 +124,14 @@ resource "google_bigquery_table" "salesforce_retailer_c" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_retailer_c'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_account" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "account"
 
   description = "This table stores comprehensive information about accounts, which represent customers or business partners. It includes details on location, contact information, financial data, and various business-related attributes. The table facilitates account management, sales analysis, and reporting. It also tracks key dates, integration statuses, and relevant identifiers for each account."
@@ -862,7 +865,7 @@ resource "google_bigquery_table" "salesforce_account" {
     foreign_keys {
       name = "fk_account_retailer_c"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "retailer_c"
       }
@@ -874,6 +877,9 @@ resource "google_bigquery_table" "salesforce_account" {
   }
 
   labels = merge(local.labels, local.lineage_labels_salesforce)
+  depends_on = [
+    var.datasets
+  ]
   lifecycle {
     ignore_changes = [
       schema,
@@ -882,14 +888,14 @@ resource "google_bigquery_table" "salesforce_account" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_account'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_contact" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "contact"
 
   description = "This table stores comprehensive information about individual contacts. It includes personal details, contact information, and communication preferences, with links to accounts and owners."
@@ -1617,7 +1623,7 @@ resource "google_bigquery_table" "salesforce_contact" {
     foreign_keys {
       name = "fk_contact_account"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "account"
       }
@@ -1629,6 +1635,9 @@ resource "google_bigquery_table" "salesforce_contact" {
   }
 
   labels = merge(local.labels, local.lineage_labels_salesforce)
+  depends_on = [
+    var.datasets
+  ]
   lifecycle {
     ignore_changes = [
       schema,
@@ -1637,14 +1646,14 @@ resource "google_bigquery_table" "salesforce_contact" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_contact'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_program_c" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "program_c"
 
   description = "This table stores details about programs, including ownership and linked accounts."
@@ -1858,6 +1867,7 @@ resource "google_bigquery_table" "salesforce_program_c" {
   depends_on = [
     google_bigquery_table.salesforce_account,
     google_bigquery_table.salesforce_program_c,
+    var.datasets
   ]
 
   table_constraints {
@@ -1869,7 +1879,7 @@ resource "google_bigquery_table" "salesforce_program_c" {
     foreign_keys {
       name = "fk_program_account"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "account"
       }
@@ -1889,14 +1899,14 @@ resource "google_bigquery_table" "salesforce_program_c" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_program_c'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_project_c" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "project_c"
 
   description = "This table stores information about projects and links to programs."
@@ -2091,6 +2101,7 @@ resource "google_bigquery_table" "salesforce_project_c" {
 
   depends_on = [
     google_bigquery_table.salesforce_contact,
+    var.datasets
   ]
 
   table_constraints {
@@ -2102,7 +2113,7 @@ resource "google_bigquery_table" "salesforce_project_c" {
     foreign_keys {
       name = "fk_project_program"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "program_c"
       }
@@ -2122,14 +2133,14 @@ resource "google_bigquery_table" "salesforce_project_c" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_project_c'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_user" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "user"
 
   description = "This table stores comprehensive details about users within a Salesforce environment. It includes personal information, contact details, and preferences. It also tracks permissions and references to related entities."
@@ -3359,6 +3370,7 @@ resource "google_bigquery_table" "salesforce_user" {
 
   depends_on = [
     google_bigquery_table.salesforce_contact,
+    var.datasets
   ]
 
   table_constraints {
@@ -3370,7 +3382,7 @@ resource "google_bigquery_table" "salesforce_user" {
     foreign_keys {
       name = "fk_user_contact"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "contact"
       }
@@ -3382,7 +3394,7 @@ resource "google_bigquery_table" "salesforce_user" {
     foreign_keys {
       name = "fk_user_account"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "account"
       }
@@ -3402,14 +3414,14 @@ resource "google_bigquery_table" "salesforce_user" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_user'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_product_2" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "product_2"
 
   description = "This table stores comprehensive details about products. It includes product identification, categorization, and status information. The table tracks key dates and supports linking to quote line items."
@@ -3597,6 +3609,7 @@ resource "google_bigquery_table" "salesforce_product_2" {
   depends_on = [
     google_bigquery_table.salesforce_account,
     google_bigquery_table.salesforce_contact,
+    var.datasets
   ]
 
   table_constraints {
@@ -3616,14 +3629,14 @@ resource "google_bigquery_table" "salesforce_product_2" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_product_2'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_opportunity" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "opportunity"
 
   description = "This table stores information about sales opportunities and references related accounts, owners, and contacts."
@@ -4148,6 +4161,7 @@ resource "google_bigquery_table" "salesforce_opportunity" {
   depends_on = [
     google_bigquery_table.salesforce_account,
     google_bigquery_table.salesforce_opportunity,
+    var.datasets
   ]
 
   table_constraints {
@@ -4159,7 +4173,7 @@ resource "google_bigquery_table" "salesforce_opportunity" {
     foreign_keys {
       name = "fk_opportunity_account"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "account"
       }
@@ -4171,7 +4185,7 @@ resource "google_bigquery_table" "salesforce_opportunity" {
     foreign_keys {
       name = "fk_opportunity_contact"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "contact"
       }
@@ -4191,14 +4205,14 @@ resource "google_bigquery_table" "salesforce_opportunity" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_opportunity'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_quote" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "quote"
 
   description = "This table stores details about sales quotes and references related opportunities, accounts, owners, and contacts."
@@ -4867,6 +4881,7 @@ resource "google_bigquery_table" "salesforce_quote" {
   depends_on = [
     google_bigquery_table.salesforce_account,
     google_bigquery_table.salesforce_opportunity,
+    var.datasets
   ]
 
   table_constraints {
@@ -4878,7 +4893,7 @@ resource "google_bigquery_table" "salesforce_quote" {
     foreign_keys {
       name = "fk_quote_account"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "account"
       }
@@ -4890,7 +4905,7 @@ resource "google_bigquery_table" "salesforce_quote" {
     foreign_keys {
       name = "fk_quote_contact"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "contact"
       }
@@ -4902,7 +4917,7 @@ resource "google_bigquery_table" "salesforce_quote" {
     foreign_keys {
       name = "fk_quote_opportunity"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "opportunity"
       }
@@ -4922,14 +4937,14 @@ resource "google_bigquery_table" "salesforce_quote" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_quote'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_quote_line_item" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "quote_line_item"
 
   description = "This table stores details about individual items within a sales quote. It links quotes and products for downstream joins."
@@ -5160,6 +5175,7 @@ resource "google_bigquery_table" "salesforce_quote_line_item" {
 
   depends_on = [
     google_bigquery_table.salesforce_quote,
+    var.datasets
   ]
 
   table_constraints {
@@ -5171,7 +5187,7 @@ resource "google_bigquery_table" "salesforce_quote_line_item" {
     foreign_keys {
       name = "fk_qli_quote"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "quote"
       }
@@ -5183,7 +5199,7 @@ resource "google_bigquery_table" "salesforce_quote_line_item" {
     foreign_keys {
       name = "fk_qli_product"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "product_2"
       }
@@ -5203,14 +5219,14 @@ resource "google_bigquery_table" "salesforce_quote_line_item" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_quote_line_item'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_quote_line_forecast_c" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "quote_line_forecast_c"
 
   description = "This table stores information related to quote line forecasts and links to quote line items."
@@ -5315,6 +5331,7 @@ resource "google_bigquery_table" "salesforce_quote_line_forecast_c" {
   depends_on = [
     google_bigquery_table.salesforce_opportunity,
     google_bigquery_table.salesforce_quote_line_item,
+    var.datasets
   ]
 
   table_constraints {
@@ -5326,7 +5343,7 @@ resource "google_bigquery_table" "salesforce_quote_line_forecast_c" {
     foreign_keys {
       name = "fk_qlf_qli"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "quote_line_item"
       }
@@ -5346,14 +5363,14 @@ resource "google_bigquery_table" "salesforce_quote_line_forecast_c" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_quote_line_forecast_c'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_forecast_c" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "forecast_c"
 
   description = "This table stores forecast data with links to opportunities."
@@ -5500,6 +5517,7 @@ resource "google_bigquery_table" "salesforce_forecast_c" {
 
   depends_on = [
     google_bigquery_table.salesforce_quote_line_item,
+    var.datasets
   ]
 
   table_constraints {
@@ -5511,7 +5529,7 @@ resource "google_bigquery_table" "salesforce_forecast_c" {
     foreign_keys {
       name = "fk_forecast_opportunity"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "opportunity"
       }
@@ -5531,14 +5549,14 @@ resource "google_bigquery_table" "salesforce_forecast_c" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_forecast_c'. Ensure the dataset is defined in var.datasets."
     }
   }
 }
 
 resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
-  dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+  dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
   table_id   = "forecast_line_item_c"
 
   description = "This table stores granular forecast data related to sales opportunities, linked to programs, projects, products, and quote line items."
@@ -5790,6 +5808,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
   depends_on = [
     google_bigquery_table.salesforce_quote_line_item,
     google_bigquery_table.salesforce_quote_line_forecast_c,
+    var.datasets
   ]
 
   table_constraints {
@@ -5801,7 +5820,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
     foreign_keys {
       name = "fk_fli_quote_line_item"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "quote_line_item"
       }
@@ -5813,7 +5832,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
     foreign_keys {
       name = "fk_fli_quote_line_forecast"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "quote_line_forecast_c"
       }
@@ -5825,7 +5844,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
     foreign_keys {
       name = "fk_fli_program"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "program_c"
       }
@@ -5837,7 +5856,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
     foreign_keys {
       name = "fk_fli_project"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "project_c"
       }
@@ -5849,7 +5868,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
     foreign_keys {
       name = "fk_fli_product"
       referenced_table {
-        dataset_id = google_bigquery_dataset.datasets["${var.salesforce_dataset_prefix}"].dataset_id
+        dataset_id = var.datasets[var.salesforce_dataset_prefix].dataset_id
         project_id = var.project_id
         table_id   = "product_2"
       }
@@ -5869,7 +5888,7 @@ resource "google_bigquery_table" "salesforce_forecast_line_item_c" {
     ]
 
     precondition {
-      condition     = contains(keys(google_bigquery_dataset.datasets), "${var.salesforce_dataset_prefix}")
+      condition     = try(var.datasets[var.salesforce_dataset_prefix], null) != null
       error_message = "Dataset '${var.salesforce_dataset_prefix}' must exist before creating table 'salesforce_forecast_line_item_c'. Ensure the dataset is defined in var.datasets."
     }
   }
