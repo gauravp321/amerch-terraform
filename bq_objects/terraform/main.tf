@@ -104,11 +104,13 @@ locals {
 module "bq_tables" {
   source = "./tables"
 
-  #  project_id                  = var.project_id
-  #  location                    = var.location
-  # datasets                    = google_bigquery_dataset.datasets
-  #  gcloud_mysql_dataset_prefix = var.gcloud_mysql_dataset_prefix
+  project_id                  = var.project_id
+  region                      = var.region
+  datasets                    = google_bigquery_dataset.datasets
+  gcloud_mysql_dataset_prefix = var.gcloud_mysql_dataset_prefix
+  salesforce_dataset_prefix   = var.salesforce_dataset_prefix
+  workday_hcm_dataset_prefix  = var.workday_hcm_dataset_prefix
 
-  #  common_labels        = local.labels
-  #  lineage_labels_mysql = local.lineage_labels_mysql
+  labels               = local.labels
+  #lineage_labels_mysql = local.lineage_labels_mysql
 }
